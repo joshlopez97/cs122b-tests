@@ -2,7 +2,7 @@
 Postman (newman) test scripts for HWs 
 
 We will post 
-1. `example tests` before HW deadline so you can have a sense of what the tests looks like and write your own tests.
+1. `sample tests` before HW deadline so you can have a sense of what the tests looks like and write your own tests.
 
 1. `actual grading tests` after HW deadline so you can double check.
 
@@ -23,7 +23,7 @@ There are two scripts part you could write: `Pre-request Script` and `Tests`
 
 1. On the rop left corner, click `import`
 
-1. Select the test json to be imported. For example, the `BasicService(Example).postman_collection.json`
+1. Select the test json to be imported. For example, the `BasicService(Sample).postman_collection.json`
 
 1. On the top right corner, next to `Environment`, click the `Manage Environment` button
 
@@ -39,7 +39,7 @@ There are two scripts part you could write: `Pre-request Script` and `Tests`
 `newman run <test_json> --global-var 'host=<your_service_host>' --global-var 'port=<your_service_port>'`
 
     For example:
-    `newman run BasicService\(Example\).postman_collection.json --global-var 'host=localhost' --global-var 'port=8080'`
+    `newman run BasicService\(Sample\).postman_collection.json --global-var 'host=localhost' --global-var 'port=8080'`
     
     
 ## To add more tests yourself
