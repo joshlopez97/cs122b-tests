@@ -58,7 +58,7 @@
 					"raw": "{\n    \"input\": \"the quick brown fox jumps over the lazy dog\",\n    \"len\": 9\n}\n"
 				},
 				"url": {
-					"raw": "http://{{host}}:{{port}} /api/basicService/validateString",
+					"raw": "http://{{host}}:{{port}}/api/basicService/validateString",
 					"protocol": "http",
 					"host": [
 						"{{host}}"
@@ -127,7 +127,7 @@
 					"raw": "{\n    \"input\": \"the quick brown fox jumps over the lazy dog\",\n    \"len\": 10\n}\n"
 				},
 				"url": {
-					"raw": "http://{{host}}:{{port}} /api/basicService/validateString",
+					"raw": "http://{{host}}:{{port}}/api/basicService/validateString",
 					"protocol": "http",
 					"host": [
 						"{{host}}"
@@ -195,7 +195,7 @@
 					"raw": "{\n    \"invalid-input\": \"the quick brown fox jumps over the lazy dog\",\n    \"invalid-len\": 9\n}\n"
 				},
 				"url": {
-					"raw": "http://{{host}}:{{port}} /api/basicService/validateString",
+					"raw": "http://{{host}}:{{port}}/api/basicService/validateString",
 					"protocol": "http",
 					"host": [
 						"{{host}}"
