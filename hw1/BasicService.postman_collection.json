@@ -74,6 +74,7 @@
 							"script": {
 								"id": "3d55569a-100a-48c0-9a1d-4dfa242d3388",
 								"exec": [
+									"console.log(pm.globals.get(\"record-num\"));",
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
@@ -101,8 +102,8 @@
 									"    let jsonData = pm.response.json();",
 									"    // the number should match the records in database.",
 									"    // you may test yourself. grading script will manage the database outside postman/newman",
-									"    console.log(pm.globals.get(\"record-num\"));",
-									"    pm.expect(jsonData.numRecords).eql(pm.globals.get(\"record-num\"));",
+									"    console.log(\"expecting \"+ pm.variables.get(\"record-num\"))",
+									"    pm.expect(jsonData.numRecords).eql(pm.variables.get(\"record-num\"));",
 									"    ",
 									"});",
 									"",
@@ -221,7 +222,7 @@
 									"                        ",
 									"",
 									"            ",
-									"            postman.setGlobalVariable(\"texts-index\", _.random(1,3));            ",
+									"postman.setGlobalVariable(\"texts-index\", _.random(1,3));            ",
 									""
 								],
 								"type": "text/javascript"
