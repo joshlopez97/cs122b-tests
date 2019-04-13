@@ -23,7 +23,7 @@ There are two scripts part you could write: `Pre-request Script` and `Tests`
 
 1. On the rop left corner, click `import`
 
-1. Select the test json to be imported. For example, the `BasicService(Sample).postman_collection.json`
+1. Select the test json to be imported. For example, the `BasicService.postman_collection.json`
 
 1. On the top right corner, next to `Environment`, click the `Manage Environment` button
 
@@ -40,7 +40,7 @@ There are two scripts part you could write: `Pre-request Script` and `Tests`
 `newman run <test_json> --global-var 'host=<your_service_host>' --global-var 'port=<your_service_port>' -d <data_file>`
 
     For example:
-    `newman run BasicService\(Sample\).postman_collection.json --global-var 'host=localhost' --global-var 'port=8080' -d ./hw1-test-data.json`
+    `newman run BasicService.postman_collection.json --global-var 'host=localhost' --global-var 'port=8080' -d ./hw1-test-data.json`
     
     
 ## To add more tests yourself
