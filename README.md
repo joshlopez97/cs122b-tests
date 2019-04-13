@@ -29,17 +29,18 @@ There are two scripts part you could write: `Pre-request Script` and `Tests`
 
 1. Add an environment with two keys: `host` = `localhost`, `port` = your service port. You may also use other environment variables.
 
-1. Then run your request tests. You may select one request and hit the `Send` button to test individually, or select the collection to run all tests.
+1. Then run the collection of your requests. Under `Data` section, select the data.json files assoicated with each test.
+
 
 ## To use the tests with `newman`
 
 1. Download `newman@4.4.1` with `npm install -g newman`. Get `npm` if you do not have it.
 
 1. Run with the following command:
-`newman run <test_json> --global-var 'host=<your_service_host>' --global-var 'port=<your_service_port>'`
+`newman run <test_json> --global-var 'host=<your_service_host>' --global-var 'port=<your_service_port>' -d <data_file>`
 
     For example:
-    `newman run BasicService\(Sample\).postman_collection.json --global-var 'host=localhost' --global-var 'port=8080'`
+    `newman run BasicService\(Sample\).postman_collection.json --global-var 'host=localhost' --global-var 'port=8080' -d ./hw1-test-data.json`
     
     
 ## To add more tests yourself
