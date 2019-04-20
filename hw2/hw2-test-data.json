@@ -6,7 +6,7 @@
     "email4": "\"johndoe414@uci.edu\"",
     "email5": "\"johndoe415@uci.edu\"",
     "email6": "\"johndoe416@uci.edu\"",
-    "invalidFormatEmail": "@abc.com",
+    "invalidFormatEmail": "\"@abc.com\"",
     "existingEmail": "\"existed@existed.com\"",
     "nonExistingEmail": "\"non-exsiting-valid-email@email.com\"",
     "tooLongEmail": "\"thisisasuperlongemailwhichIdonotknowwhyithastobethislongbutanywayitismadetobethislongsobeit@wellanothersuperlongdomainbutitseemstobevalid.com\"",
