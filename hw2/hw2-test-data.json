@@ -1,0 +1,24 @@
+[
+  {
+    "email1": "\"johndoe411@uci.edu\"",
+    "email2": "\"johndoe412@uci.edu\"",
+    "email3": "\"johndoe413@uci.edu\"",
+    "email4": "\"johndoe414@uci.edu\"",
+    "email5": "\"johndoe415@uci.edu\"",
+    "email6": "\"johndoe416@uci.edu\"",
+    "invalidFormatEmail": "@abc.com",
+    "existingEmail": "\"existed@existed.com\"",
+    "nonExistingEmail": "\"non-exsiting-valid-email@email.com\"",
+    "tooLongEmail": "\"thisisasuperlongemailwhichIdonotknowwhyithastobethislongbutanywayitismadetobethislongsobeit@wellanothersuperlongdomainbutitseemstobevalid.com\"",
+    "invalidJson": "\"this is an invalid json[]\"",
+    "password": "[\"2\", \"n\", \"d\", \"5\", \"#\", \"1\", \"A\", \"p\"]",
+    "tooShortPassword": "[\"2\",\"N\",\"d\", \"p\", \"1\", \"!\"]",
+    "invalidCharReqPassword": "[\"2\", \"n\", \"d\", \"2\", \"1\", \"1\", \"A\", \"p\"]",
+    "mismatchedPassword": "[\"3\", \"n\", \"d\", \"5\", \"#\", \"1\", \"A\", \"p\"]",
+    "extraValue": "\"extraValue\"",
+    "returnSchema": "{\"type\": \"object\",\"properties\": {\"resultCode\": {\"type\": \"number\"},\"message\": {\"type\": \"string\"}}}",
+    "plevel": 5,
+    "insufficientPlevel": 4,
+    "outOfRangePlevel": -1
+  }
+]
