@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f2109335-d996-4946-a2ef-5083ea492924",
+		"_postman_id": "53cc6abb-e30a-4125-ae5d-298df7a33eea",
 		"name": "IDMService",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -436,7 +436,7 @@
 									"    pm.expect(jsonData.resultCode).eql(-12);",
 									"",
 									"    pm.expect(jsonData.message).not.eql(null);",
-									"    pm.expect(jsonData.message).to.contain(\"Password has invalid length (cannot be empty/null)\");",
+									"    pm.expect(jsonData.message).to.contain(\"Password has invalid length\");",
 									"    ",
 									"});",
 									"",
@@ -515,7 +515,7 @@
 									"    pm.expect(jsonData.resultCode).eql(-12);",
 									"",
 									"    pm.expect(jsonData.message).not.eql(null);",
-									"    pm.expect(jsonData.message).to.contain(\"Password has invalid length (cannot be empty/null)\");",
+									"    pm.expect(jsonData.message).to.contain(\"Password has invalid length\");",
 									"    ",
 									"});",
 									"",
