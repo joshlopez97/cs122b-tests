@@ -18,6 +18,7 @@
     "mismatchedPassword": "[\"3\", \"n\", \"d\", \"5\", \"#\", \"1\", \"A\", \"p\"]",
     "extraValue": "\"extraValue\"",
     "returnSchema": "{\"type\": \"object\",\"properties\": {\"resultCode\": {\"type\": \"number\"},\"message\": {\"type\": \"string\"}}}",
+    "loginReturnSchema" : "{\"type\": \"object\",\"properties\": {\"resultCode\": {\"type\": \"number\"},\"message\": {\"type\": \"string\"}, \"sessionID\": {\"type\": \"string\"}}}",
     "plevel": 5,
     "insufficientPlevel": 4,
     "outOfRangePlevel": -1
