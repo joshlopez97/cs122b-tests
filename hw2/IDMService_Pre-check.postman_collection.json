@@ -2028,75 +2028,6 @@
           "response": []
         },
         {
-          "name": "/api/idm/session - Session is expired (case 131)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(131);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is expired\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{sessionTestEmail}},\n\t\"sessionID\":{{expiredSessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "/api/idm/session - Session is closed (case 132)",
           "event": [
             {
@@ -2148,6 +2079,75 @@
             "body": {
               "mode": "raw",
               "raw": "{\n\t\"email\":{{sessionTestEmail}},\n\t\"sessionID\":{{closedSessionID}}\n}"
+            },
+            "url": {
+              "raw": "http://{{host}}:{{port}}/api/idm/session",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "{{port}}",
+              "path": [
+                "api",
+                "idm",
+                "session"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/idm/session - Session is expired (case 131)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has a body in json format\", function () {",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "pm.test('Response matches the required schema', function() {",
+                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains an error message\", function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.resultCode).eql(131);",
+                  "",
+                  "    pm.expect(jsonData.message).not.eql(null);",
+                  "    pm.expect(jsonData.message).to.contain(\"Session is expired\");",
+                  "    ",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 1000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"email\":{{sessionTestEmail}},\n\t\"sessionID\":{{expiredSessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2354,7 +2354,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"email\":{{unfoundEmail}},\n\t\"sessionID\":{{activeSessionID}}\n}"
+              "raw": "{\n\t\"email\":{{nonExistingEmail}},\n\t\"sessionID\":{{activeSessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2423,7 +2423,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": {{invalidFormatEmail}},\n    \"password\": {{activeSessionID}}\n}"
+              "raw": "{\n    \"email\": {{invalidFormatEmail}},\n    \"sessionID\": {{activeSessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2492,7 +2492,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": {{tooLongEmail}},\n    \"password\": {{activeSessionID}}\n}"
+              "raw": "{\n    \"email\": {{tooLongEmail}},\n    \"sessionID\": {{activeSessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2628,7 +2628,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": {{email6}},\n    \"password\": {{password}},\n    \"extraValues\": {{extraValue}}\n}"
+              "raw": "{\n    \"email\": {{email1}},\n    \"password\": {{password}},\n    \"extraValues\": {{extraValue}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
