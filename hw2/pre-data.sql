@@ -5,19 +5,19 @@ truncate sessions;
 truncate session_status;
 truncate users;
 SET FOREIGN_KEY_CHECKS = 1;
-
 INSERT INTO user_status (statusid, status) VALUES (1, 'ACTIVE');
-
 INSERT INTO privilege_levels (plevel, pname) VALUES (1, 'ROOT');
 INSERT INTO privilege_levels (plevel, pname) VALUES (2, 'ADMIN');
 INSERT INTO privilege_levels (plevel, pname) VALUES (3, 'EMPLOYEE');
 INSERT INTO privilege_levels (plevel, pname) VALUES (4, 'SERVICE');
 INSERT INTO privilege_levels (plevel, pname) VALUES (5, 'USER');
-
 INSERT INTO session_status (statusid, status) VALUES (1, 'ACTIVE');
 INSERT INTO session_status (statusid, status) VALUES (2, 'CLOSED');
 INSERT INTO session_status (statusid, status) VALUES (3, 'EXPIRED');
 INSERT INTO session_status (statusid, status) VALUES (4, 'REVOKED');
-
 INSERT INTO users (id, email, plevel, status, salt, pword) VALUES (1, 'existed@existed.com', 5, 1, 'f533ba9f', '5ac7f4360e1a988209d5b0483ec83a28b139a8fa5e68581b4d8d7710c8a6ce0be31534c99b2449e57d767aea0dbb132c30ab3cb1d2752a0443b5f37576dc55f5');
-
+INSERT INTO users (id, email, plevel, status, salt, pword) VALUES (2, 'test@test.com', 5, 1, 'eab6d32f', '6496f0684616ec95d3c47761c2c57eb86b939dc80dcfc5f8af89d0b262bcc5d3f02b7677f41263f6546a2fb2c4087c64762b2e985c2ead7aa8962c40effbd409');
+INSERT INTO sessions (sessionID, email, status, timeCreated, lastUsed, exprTime) VALUES ('c21a5f3dd2c2991753dbb31401b2b19f94e9cda4ff61408b2fd7ca4bfb206d8c28fa9f76336bb21be31f9cbe255486a48caee5b33760764e088642e3385e3916', 'test@test.com', 1, NOW(), NOW(), NOW() + INTERVAL 5 DAY);
+INSERT INTO sessions (sessionID, email, status, timeCreated, lastUsed, exprTime) VALUES ('QrVcEM2XCdrTytjxhjfw4ZaJSqfj5W2KXMzdqr2Ce3mCkfKdrQA5Fmr9Bwjw4aRRz2FN4j38bdnnkWrmqBfUNwFZSP7LAzeYswqkEg4G6fE2PFc48jNxrj8TJ5gVu7ww', 'test@test.com', 2, NOW(), NOW(), NOW() + INTERVAL 5 DAY);
+INSERT INTO sessions (sessionID, email, status, timeCreated, lastUsed, exprTime) VALUES ('ZrgFen8MKzQ5pXAG6LMReCU7s2GUF8HhpPNeNLRpWj4VSetzRQfV52E7DWCUFa3TQsJePctB77nPbseDSkbMWFKrtcWXYAtrDNvhBMvyvtcgJgLtdMQZ4b37ZAFPZJ5u', 'test@test.com', 3, NOW(), NOW(), NOW());
+INSERT INTO sessions (sessionID, email, status, timeCreated, lastUsed, exprTime) VALUES ('Ffdpp7N4qmP38UfLrEVUXWe2bXAQQYp7QskP9Kv9V93EE83GpNscmwPnjeNLQ2Hw5EbPewPLfG3LrU4rjktvF7tBW7cCJwKDLx5BDJdJ2663BKhKUmQsh8SRQF5rMEEq', 'test@test.com', 4, NOW(), NOW(), NOW() + INTERVAL 5 DAY);
