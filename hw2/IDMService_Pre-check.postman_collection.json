@@ -1979,7 +1979,7 @@
                   "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"sessionReturnSchema\")),false, true)).to.be.true;",
                   "});",
                   "",
-                  "pm.test(\"Response contains an success message\", function () {",
+                  "pm.test(\"Response contains a success message\", function () {",
                   "    let jsonData = pm.response.json();",
                   "    pm.expect(jsonData.resultCode).eql(130);",
                   "",
