@@ -1802,7 +1802,8 @@
                   "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
                   "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
                   "   });",
-                  "});"
+                  "});",
+                  "setTimeout(function(){}, [2000]);"
                 ],
                 "type": "text/javascript"
               }
