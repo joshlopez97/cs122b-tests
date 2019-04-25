@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "0face5f4-cb48-4df0-8a4d-4ca96b2ada84",
+    "_postman_id": "de36fabf-123e-40d2-880f-f6949f125066",
     "name": "IDMService",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -1212,7 +1212,6 @@
                   "",
                   "    pm.expect(jsonData.message).not.eql(null);",
                   "    pm.expect(jsonData.message).to.contain(\"User logged in successfully\");",
-                  "    pm.variables.set(\"activeLoginSessionID\", jsonData.sessionID);",
                   "    ",
                   "});",
                   "",
@@ -1220,6 +1219,20 @@
                   "    pm.expect(pm.response.responseTime).to.be.below(1000);",
                   "});",
                   ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "b67c0121-e2b8-4e4e-9669-788a698e1672",
+                "exec": [
+                  "const email = randomString(randomInt(3,10))+ '@test.com';",
+                  "pm.variables.set('email', JSON.stringify(email));",
+                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
+                  "pm.variables.set('password', JSON.stringify(password));",
+                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}));"
                 ],
                 "type": "text/javascript"
               }
@@ -1237,7 +1250,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": {{email1}},\n    \"password\": {{password}}\n}"
+              "raw": "{\n\t\"email\":{{email}},\n\t\"password\":{{password}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/login",
@@ -1776,6 +1789,23 @@
                 ],
                 "type": "text/javascript"
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "56372c2b-a121-4217-8f09-588e73f8f49a",
+                "exec": [
+                  "const email = randomString(randomInt(3,10))+ '@test.com';",
+                  "pm.variables.set('email', JSON.stringify(email));",
+                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
+                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
+                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
+                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
+                  "   });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
             }
           ],
           "request": {
@@ -1790,7 +1820,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"email\":{{sessionTestEmail}},\n\t\"sessionID\":{{activeSessionID}}\n}"
+              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -1859,7 +1889,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"email\":{{sessionTestEmail}},\n\t\"sessionID\":{{closedSessionID}}\n}"
+              "raw": "{\n\t\"email\":{{closedSessionEmail}},\n\t\"sessionID\":{{closedSessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -1878,7 +1908,7 @@
           "response": []
         },
         {
-          "name": "/api/idm/session - Session is expired (case 131)",
+          "name": "Revoke after Timeout",
           "event": [
             {
               "listen": "test",
@@ -1900,10 +1930,10 @@
                   "",
                   "pm.test(\"Response contains an error message\", function () {",
                   "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(131);",
+                  "    pm.expect(jsonData.resultCode).eql(133);",
                   "",
                   "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is expired\");",
+                  "    pm.expect(jsonData.message).to.contain(\"Session is revoked\");",
                   "    ",
                   "});",
                   "",
@@ -1911,6 +1941,24 @@
                   "    pm.expect(pm.response.responseTime).to.be.below(1000);",
                   "});",
                   ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "4a718b66-40ec-4fad-9ffe-fbf7b3ad6b1b",
+                "exec": [
+                  "const email = randomString(randomInt(3,10))+ '@test.com';",
+                  "pm.variables.set('email', JSON.stringify(email));",
+                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
+                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
+                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
+                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
+                  "   });",
+                  "});",
+                  "setTimeout(function(){}, [6500]);"
                 ],
                 "type": "text/javascript"
               }
@@ -1928,7 +1976,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"email\":{{sessionTestEmail}},\n\t\"sessionID\":{{expiredSessionID}}\n}"
+              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -1997,7 +2045,182 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"email\":{{sessionTestEmail}},\n\t\"sessionID\":{{revokedSessionID}}\n}"
+              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
+            },
+            "url": {
+              "raw": "http://{{host}}:{{port}}/api/idm/session",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "{{port}}",
+              "path": [
+                "api",
+                "idm",
+                "session"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Renew before Timeout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has a body in json format\", function () {",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "pm.test('Response matches the required schema', function() {",
+                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"sessionReturnSchema\")),false, true)).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains a success message\", function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.resultCode).eql(130);",
+                  "",
+                  "    pm.expect(jsonData.message).not.eql(null);",
+                  "    pm.expect(jsonData.message).to.contain(\"Session is active\");",
+                  "    pm.expect(jsonData.sessionID).not.to.eql(JSON.parse(pm.variables.get(\"sessionID\")));",
+                  "    ",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 1000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "4a718b66-40ec-4fad-9ffe-fbf7b3ad6b1b",
+                "exec": [
+                  "const email = randomString(randomInt(3,10))+ '@test.com';",
+                  "pm.variables.set('email', JSON.stringify(email));",
+                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
+                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
+                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
+                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
+                  "   });",
+                  "});",
+                  "setTimeout(function(){}, [4000]);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
+            },
+            "url": {
+              "raw": "http://{{host}}:{{port}}/api/idm/session",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "{{port}}",
+              "path": [
+                "api",
+                "idm",
+                "session"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/idm/session - Session is expired (case 131)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has a body in json format\", function () {",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "pm.test('Response matches the required schema', function() {",
+                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains an error message\", function () {",
+                  "    let jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.resultCode).eql(131);",
+                  "",
+                  "    pm.expect(jsonData.message).not.eql(null);",
+                  "    pm.expect(jsonData.message).to.contain(\"Session is expired\");",
+                  "    ",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 1000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "25a53bbd-f102-4f0d-9995-e9e11a0822de",
+                "exec": [
+                  "const email = randomString(randomInt(3,10))+ '@test.com';",
+                  "pm.variables.set('email', JSON.stringify(email));",
+                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
+                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
+                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
+                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
+                  "   });",
+                  "});",
+                  "setTimeout(function(){}, [9000]);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2066,7 +2289,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"email\":{{sessionTestEmail}},\n\t\"sessionID\":{{unfoundSessionID}}\n}"
+              "raw": "{\n\t\"email\":{{closedSessionEmail}},\n\t\"sessionID\":{{unfoundSessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2135,7 +2358,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"email\":{{nonExistingEmail}},\n\t\"sessionID\":{{activeSessionID}}\n}"
+              "raw": "{\n\t\"email\":{{nonExistingEmail}},\n\t\"sessionID\":{{sessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2204,7 +2427,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": {{invalidFormatEmail}},\n    \"sessionID\": {{activeSessionID}}\n}"
+              "raw": "{\n    \"email\": {{invalidFormatEmail}},\n    \"sessionID\": {{sessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2273,7 +2496,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": {{tooLongEmail}},\n    \"sessionID\": {{activeSessionID}}\n}"
+              "raw": "{\n    \"email\": {{tooLongEmail}},\n    \"sessionID\": {{sessionID}}\n}"
             },
             "url": {
               "raw": "http://{{host}}:{{port}}/api/idm/session",
@@ -2427,270 +2650,6 @@
           },
           "response": []
         }
-      ]
-    },
-    {
-      "name": "Logical",
-      "item": [
-        {
-          "name": "Can Login with the Newly Registered Account",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"loginReturnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains a success message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(120);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"User logged in successfully\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "4a718b66-40ec-4fad-9ffe-fbf7b3ad6b1b",
-                "exec": [
-                  "const email = randomString(randomInt(3,10))+ '@test.com';",
-                  "pm.variables.set('email', JSON.stringify(email));",
-                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
-                  "pm.variables.set('password', JSON.stringify(password));",
-                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}));"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{email}},\n\t\"password\":{{password}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Revoke after Timeout",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(133);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is revoked\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "4a718b66-40ec-4fad-9ffe-fbf7b3ad6b1b",
-                "exec": [
-                  "const email = randomString(randomInt(3,10))+ '@test.com';",
-                  "pm.variables.set('email', JSON.stringify(email));",
-                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
-                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
-                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
-                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
-                  "   });",
-                  "});",
-                  "setTimeout(function(){}, [12000]);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-					"name": "Renew before Timeout",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "ab80a059-2963-4b20-89f9-296cd578175c",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"Response has a body in json format\", function () {",
-									"    pm.response.to.be.withBody;",
-									"    pm.response.to.be.json;",
-									"});",
-									"",
-									"pm.test('Response matches the required schema', function() {",
-									"    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"sessionReturnSchema\")),false, true)).to.be.true;",
-									"});",
-									"",
-									"pm.test(\"Response contains a success message\", function () {",
-									"    let jsonData = pm.response.json();",
-									"    pm.expect(jsonData.resultCode).eql(130);",
-									"",
-									"    pm.expect(jsonData.message).not.eql(null);",
-									"    pm.expect(jsonData.message).to.contain(\"Session is active\");",
-									"    pm.expect(jsonData.sessionID).not.to.eql(JSON.parse(pm.variables.get(\"sessionID\")));",
-                                    "    pm.variables.set('sessionID', JSON.stringify(jsonData.sessionID));",
-									"    ",
-									"});",
-									"",
-									"pm.test(\"Response time is less than 1000ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "4a718b66-40ec-4fad-9ffe-fbf7b3ad6b1b",
-								"exec": [
-									"const email = randomString(randomInt(3,10))+ '@test.com';",
-									"pm.variables.set('email', JSON.stringify(email));",
-									"const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
-									"pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
-									"   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
-									"       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
-									"   });",
-									"});",
-									"setTimeout(function(){}, [6500]);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
-						},
-						"url": {
-							"raw": "http://{{host}}:{{port}}/api/idm/session",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"idm",
-								"session"
-							]
-						}
-					},
-					"response": []
-				}
       ]
     }
   ],
