@@ -1,0 +1,13 @@
+[{
+	"movieSchema" : "{\"type\": \"object\",\"properties\": {\"resultCode\": {\"type\": \"number\"},\"message\": {\"type\": \"string\"}, \"movies\" : {\"type\" : \"array\"}}}",
+	"InvalidMovieSchema" : "{\"type\": \"object\",\"properties\": {\"resultCode\": {\"type\": \"number\"},\"message\": {\"type\": \"string\"}}}",
+	"movie" : "[{\"movieId\": \"tt0195119\",\"title\": \"Osmosis\",\"year\": 2003,\"director\": \"Raphael Fejtö\",\"rating\": 7.9,\"numVotes\": 54,\"Genres\": [{\"id\": 1,\"name\": \"Action\"}],\"Stars\": [{\"id\": \"nm0000286\",\"name\": \"Stephen Baldwin\",\"birthYear\": 1966},{\"id\": \"nm0000287\",\"name\": \"William Baldwin\",\"birthYear\": 1963},{\"id\": \"nm0000288\",\"name\": \"Christian Bale\",\"birthYear\": 1974}]}]",
+	"unFoundMovie" : "[]",
+	"title" : "Osmosis",
+	"invalidFormatEmail" : "a3aecc",
+	"unexistedTitle" : "caueifhaio",
+	"addMovie" : "{\"title\" : \"Inception\", \"director\" : \"Christopher Nolan\", \"year\" : 2012, \"genres\" : [{\"id\" : 3, \"name\" : \"Action\"}]}",
+	"addedMovieSchema": "{\"type\": \"object\",\"properties\": {\"resultCode\": {\"type\": \"number\"},\"message\": {\"type\": \"string\"}, \"movieid\" : {\"type\" : \"string\"}, \"genreid\" : {\"type\" : \"array\"}}}",
+	"adminEmail" : "o33olcj@test.com",
+	"adminSession" : "1d533a455a10c99ed1cd565ea799f4c6b93086f7bc3485905512f50fd858b38a7c506330b753b1118df4f99d30a3846d36105befe49f453c48875fb7f55c6ce7"
+}]
