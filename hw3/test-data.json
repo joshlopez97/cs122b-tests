@@ -9,6 +9,8 @@
     "addMovie": "{\"title\" : \"Inception\", \"director\" : \"Christopher Nolan\", \"year\" : 2012, \"genres\" : [{\"id\" : 3, \"name\" : \"Action\"}]}",
     "addedMovieSchema": "{\"type\": \"object\",\"properties\": {\"resultCode\": {\"type\": \"number\"},\"message\": {\"type\": \"string\"}, \"movieid\" : {\"type\" : \"string\"}, \"genreid\" : {\"type\" : \"array\"}}}",
     "adminEmail": "o33olcj@test.com",
-    "adminSession": "1d533a455a10c99ed1cd565ea799f4c6b93086f7bc3485905512f50fd858b38a7c506330b753b1118df4f99d30a3846d36105befe49f453c48875fb7f55c6ce7"
+    "adminSessionID": "1d533a455a10c99ed1cd565ea799f4c6b93086f7bc3485905512f50fd858b38a7c506330b753b1118df4f99d30a3846d36105befe49f453c48875fb7f55c6ce7",
+    "email": "Hfiakod@test.com",
+    "sessionID": "ee9fd766be7305c113423da8d48706a0266354b44aa66e83ffba70eaa3bb4c7870f254876d69fc6b5bd0ed6beaf731d0846002593ebd3feec32b7182b616126b"
   }
 ]

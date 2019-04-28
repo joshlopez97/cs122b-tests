@@ -1122,7 +1122,7 @@
 							{
 								"key": "sessionID",
 								"type": "text",
-								"value": "{{adminSession}}"
+								"value": "{{adminSessionID}}"
 							}
 						],
 						"body": {
@@ -1163,33 +1163,7 @@
 					"    for (var i = 0; i < len; i++)",
 					"        string += possible.charAt(randomInt(0, 61));",
 					"    return string;",
-					"};",
-					"idmHost = ()=> pm.globals.get(\"idmHost\");",
-					"idmPort = ()=> pm.globals.get(\"idmPort\");",
-					"requestBuilder = (api, payload) => {",
-					"return {",
-					"           url:  \"http://\"+ idmHost()+ \":\" + idmPort() + api, ",
-					"           method: 'POST',",
-					"           header: {",
-					"               'Accept': 'application/json',",
-					"               'Content-Type': 'application/json',",
-					"           },",
-					"           body: {",
-					"               mode :\"raw\",",
-					"               raw: JSON.stringify(payload)",
-					"           }",
-					"       };",
-					"};",
-					"",
-					"const email = randomString(randomInt(3,10))+ '@test.com';",
-					"pm.globals.set('email', email);",
-					"const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
-					"pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
-					"   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
-					"       pm.globals.set('sessionID', res.json().sessionID);",
-					"   });",
-					"});",
-					"setTimeout(function(){}, [2000]);"
+					"};"
 				]
 			}
 		},
