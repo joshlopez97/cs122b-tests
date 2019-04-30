@@ -46,7 +46,7 @@
     "limit" : 7,
     "offset": 15,
     "sortby": "rating",
-    "orderby": "dsc",
+    "orderby": "desc",
     "invalidFormatEmail": "a3aecc",
     "unexistedTitle": "caueifhaio",
     "addMovie": "{\"title\" : \"Inception\", \"director\" : \"Christopher Nolan\", \"year\" : 2012, \"genres\" : [{\"id\" : 1, \"name\" : \"Action\"}]}",
