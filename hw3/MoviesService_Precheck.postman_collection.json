@@ -1,10 +1,518 @@
 {
 	"info": {
 		"_postman_id": "f565c131-cbac-472b-bc39-1743926402e4",
-		"name": "MoviesService_Precheck_new",
+		"name": "MoviesService_Precheck_newn",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Add",
+			"item": [
+				{
+					"name": "/api/movies/search - User has insufficient privilege (Case 214)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a body in json format\", () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test('Response matches the required schema', () => {",
+									"    pm.expect(tv4.validate(pm.response.json(), addedMovieSchema,false, true)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response contains a success message\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.resultCode).eql(141);",
+									"    ",
+									"",
+									"    pm.expect(jsonData.message).not.eql(null);",
+									"    pm.expect(jsonData.message).to.contain(\"User has insufficient privilege\");",
+									"    ",
+									"});",
+									"",
+									"/*",
+									"pm.test(\"Response contains correct data\", () => {",
+									"    let jsonData = pm.response.json();",
+									"pm.environment.get(\"variable_key\");",
+									"    pm.expect(jsonData.movies).eql(JSON.parse(pm.variables.get(\"addedMovieData\")));",
+									"    ",
+									"});*/",
+									"",
+									"",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "{{email}}"
+							},
+							{
+								"key": "sessionID",
+								"type": "text",
+								"value": "{{sessionID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{addMovie}}"
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/api/movies/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"movies",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/movies/search - SessionID not provided in request header(Case -17)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+								"exec": [
+									"",
+									"pm.test(\"Status code is 400\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a body in json format\", () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test('Response matches the required schema', () => {",
+									"    pm.expect(tv4.validate(pm.response.json(), addedMovieSchema, false, true)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response contains a error message\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.resultCode).eql(-17);",
+									"",
+									"    pm.expect(jsonData.message).not.eql(null);",
+									"    pm.expect(jsonData.message).to.contain(\"SessionID not provided in request header\");",
+									"    ",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "{{email}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{addMovie}}"
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/api/movies/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"movies",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/movies/search - Email not provided in request header (Case -16)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+								"exec": [
+									"",
+									"pm.test(\"Status code is 400\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a body in json format\", () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test('Response matches the required schema', () => {",
+									"    pm.expect(tv4.validate(pm.response.json(), addedMovieSchema, false, true)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response contains a error message\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.resultCode).eql(-16);",
+									"    ",
+									"    pm.expect(jsonData.message).not.eql(null);",
+									"    pm.expect(jsonData.message).to.contain(\"Email not provided in request header\");",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "{{email}}",
+								"disabled": true
+							},
+							{
+								"key": "sessionID",
+								"type": "text",
+								"value": "{{sessionID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{addMovie}}"
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/api/movies/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"movies",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/movies/search - Email has invalid format(Case -11)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+								"exec": [
+									"",
+									"pm.test(\"Status code is 400\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a body in json format\", () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test('Response matches the required schema', () => {",
+									"    pm.expect(tv4.validate(pm.response.json(), addedMovieSchema, false, true)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response contains a error message\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.resultCode).eql(-11);",
+									"    ",
+									"",
+									"    pm.expect(jsonData.message).not.eql(null);",
+									"    pm.expect(jsonData.message).to.contain(\"Email has invalid format\");",
+									"    ",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "{{invalidFormatEmail}}"
+							},
+							{
+								"key": "sessionID",
+								"type": "text",
+								"value": "{{sessionID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{addMovie}}"
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/api/movies/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"movies",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/movies/search -  Movie successfully added (214)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a body in json format\", () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test('Response matches the required schema', () => {",
+									"    console.log(pm.response.json())",
+									"    console.log(addedMovieSchema)",
+									"    pm.expect(tv4.validate(pm.response.json(), addedMovieSchema, false, true)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response contains a error message\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.resultCode).eql(214);",
+									"    ",
+									"",
+									"    pm.expect(jsonData.message).not.eql(null);",
+									"    pm.expect(jsonData.message).to.contain(\"Movie successfully added\");",
+									"    ",
+									"});",
+									"",
+									"pm.test(\"Response contains correct data\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    ",
+									"    targetGenres = JSON.parse(pm.variables.get(\"addMovieGenres\"));",
+									"    pm.expect(jsonData.genreid.sort(dynamicSort(\"name\"))).eql(targetGenres.sort(dynamicSort(\"name\")))",
+									"    ",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "{{adminEmail}}"
+							},
+							{
+								"key": "sessionID",
+								"type": "text",
+								"value": "{{adminSessionID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{addMovie}}"
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/api/movies/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"movies",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/api/movies/search -  Duplicate movie (216)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a body in json format\", () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test('Response matches the required schema', () => {",
+									"    pm.expect(tv4.validate(pm.response.json(), addedMovieSchema, false, true)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response contains a error message\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.resultCode).eql(216);",
+									"    ",
+									"",
+									"    pm.expect(jsonData.message).not.eql(null);",
+									"    pm.expect(jsonData.message).to.contain(\"Movie already exists\");",
+									"    ",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "email",
+								"type": "text",
+								"value": "{{adminEmail}}"
+							},
+							{
+								"key": "sessionID",
+								"type": "text",
+								"value": "{{adminSessionID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{addMovie}}"
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/api/movies/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"movies",
+								"add"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "Search",
 			"item": [
@@ -946,9 +1454,7 @@
 					"        \"message\": {",
 					"            \"type\": \"string\"",
 					"        },",
-					"        \"movies\": {",
-					"            'type' : 'array'",
-					"        }",
+					"        \"movies\": movieSchema",
 					"    }",
 					"}",
 					"noMovieReturnSchema=  {",
@@ -963,7 +1469,32 @@
 					"    }",
 					"}",
 					"",
-					""
+					"addedMovieSchema = {",
+					"    \"type\": \"object\", ",
+					"    \"properties\": {",
+					"        \"resultCode\": {",
+					"            \"type\": \"number\"",
+					"        }, \"message\": {",
+					"            \"type\": \"string\"",
+					"        }, \"movieid\" : {",
+					"            \"type\" : \"string\"",
+					"        }, \"genreid\" : {",
+					"            \"type\" : \"array\",",
+					"            'items' : {",
+					"                \"type\":'object',",
+					"                \"properties\":{",
+					"                    \"name\":{",
+					"                        \"type\": \"string\"",
+					"                    },",
+					"                    \"id\":{",
+					"                        \"type\":\"number\"",
+					"                    }",
+					"                }",
+					"            }",
+					"        }",
+					"    }",
+					"}",
+					"  "
 				]
 			}
 		},
@@ -976,6 +1507,32 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "c290c749-bdb9-44d5-a798-486d669435ce",
+			"key": "adminEmail",
+			"value": "o33olcj@test.com",
+			"type": "string"
+		},
+		{
+			"id": "09cbfde4-70bc-44ae-a7e9-f19957a7f546",
+			"key": "adminSessionID",
+			"value": "1d533a455a10c99ed1cd565ea799f4c6b93086f7bc3485905512f50fd858b38a7c506330b753b1118df4f99d30a3846d36105befe49f453c48875fb7f55c6ce7",
+			"type": "string"
+		},
+		{
+			"id": "1c2946d5-a122-4a0c-a679-a4dcc5dd67cb",
+			"key": "email",
+			"value": "Hfiakod@test.com",
+			"type": "string"
+		},
+		{
+			"id": "292d0a98-426f-4510-9b70-23568c16bff4",
+			"key": "sessionID",
+			"value": "ee9fd766be7305c113423da8d48706a0266354b44aa66e83ffba70eaa3bb4c7870f254876d69fc6b5bd0ed6beaf731d0846002593ebd3feec32b7182b616126b",
+			"type": "string"
 		}
 	]
 }
