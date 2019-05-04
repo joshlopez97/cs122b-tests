@@ -1,0 +1,20 @@
+[
+  {
+    "invalidLengthEmail": "\"validbuttoolongemailthatexists50byteslength@long.com\"",
+    "invalidFormatEmail": "\"a@com\"",
+    "movie1": "\"tt0212985\"",
+    "quantity1": 2,
+    "email3": "\"email3@test.com\"",
+    "extraValue": 3,
+    "cartRetrieve": "[{\"movieId\":\"tt0212985\",\"quantity\":2}]",
+    "negativeQuantity": -1,
+    "movie2": "\"tt0212985\"",
+    "quantity2": 5,
+    "invalidCreditCardId" : "\"9999888877a76666321\"",
+    "tooShortCreditCardId": "\"999988887777123\"",
+    "tooLongCreditCardId": "\"999988887777666655551\"",
+    "existingCreditCardId": "\"9999999999999999999\"",
+    "nonExistingCreditCardId": "\"8888888888888888888\""
+  }
+]
+

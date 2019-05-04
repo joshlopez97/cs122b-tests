@@ -1,0 +1,2 @@
+DELETE FROM creditcards WHERE id = '9999999999999999999';
+INSERT INTO creditcards VALUES ('9999999999999999999', 'The Test First Name', 'The Test Last Name', CURDATE() +  INTERVAL 1 DAY);
