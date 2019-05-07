@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "4928a0a4-fb26-45e6-a9f8-d4f17a2f0f2f",
+    "_postman_id": "da476bc9-c81b-491a-9705-4da4e1a54138",
     "name": "BillingsService",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -661,6 +661,77 @@
               "response": []
             },
             {
+              "name": "Shopping cart item inserted successfully (Case 3100) Another one",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains a success message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(3100);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Shopping cart item inserted successfully\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie2}},\n   \"quantity\": {{quantity2}}\n} \n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/cart/insert",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "cart",
+                    "insert"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Duplicate insertion (Case 33)",
               "event": [
                 {
@@ -982,7 +1053,7 @@
                       "",
                       "pm.test(\"Response contains correct data\", () => {",
                       "    let jsonData = pm.response.json();",
-                      "    targetItems = JSON.parse(pm.variables.get(\"cartRetrieve\"));",
+                      "    targetItems = JSON.parse(pm.variables.get(\"cartRetrieve1\"));",
                       "    console.log(targetItems);",
                       "    pm.expect(jsonData.items.length).eql(targetItems.length);",
                       "    ",
@@ -1165,7 +1236,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{invalidFormatEmail}},\n   \"movieId\": {{movie2}},\n   \"quantity\": {{quantity2}}\n}\n"
+                  "raw": "{  \n   \"email\": {{invalidFormatEmail}},\n   \"movieId\": {{movie1}},\n   \"quantity\": {{quantity3}}\n}\n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
@@ -1307,7 +1378,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"movieId\": {{movie2}},\n   \"quantity\": {{quantity2}}\n}\n"
+                  "raw": "{  \n   \"movieId\": {{movie1}},\n   \"quantity\": {{quantity3}}\n}\n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
@@ -1378,7 +1449,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"quantity\": {{quantity2}}\n}\n"
+                  "raw": "{  \n   \"email\": {{email1}},\n   \"quantity\": {{quantity3}}\n}\n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
@@ -1449,7 +1520,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie2}}\n}\n"
+                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie1}}\n}\n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
@@ -1520,7 +1591,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie2}},\n   \"quantity\": {{quantity2}},\n   \"extra\": {{extraValue}}\n}\n"
+                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie1}},\n   \"quantity\": {{quantity3}},\n   \"extra\": {{extraValue}}\n}\n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
@@ -1591,7 +1662,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie2}},\n   \"quantity\": 0\n}\n"
+                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie1}},\n   \"quantity\": 0\n}\n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
@@ -1662,7 +1733,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie2}},\n   \"quantity\": {{negativeQuantity}}\n} \n"
+                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie1}},\n   \"quantity\": {{negativeQuantity}}\n} \n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
@@ -1733,7 +1804,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie2}},\n   \"quantity\": {{quantity2}}\n} \n"
+                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie1}},\n   \"quantity\": {{quantity3}}\n} \n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
@@ -1747,6 +1818,92 @@
                     "billing",
                     "cart",
                     "update"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Retrieve to Verify",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), cartReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains a success message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(3130);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Shopping cart retrieved successfully\");",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains correct data\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    targetItems = JSON.parse(pm.variables.get(\"cartRetrieve2\"));",
+                      "    console.log(targetItems);",
+                      "    pm.expect(jsonData.items.length).eql(targetItems.length);",
+                      "    ",
+                      "    jsonData.items.sort(dynamicSort(\"movieId\"));",
+                      "    targetItems.sort(dynamicSort(\"movieId\"));",
+                      "    ",
+                      "    for (i = 0; i< targetItems.length; i++){",
+                      "        pm.expect(jsonData.items[i].movieId).eql(targetItems[i].movieId);",
+                      "        pm.expect(jsonData.items[i].email).eql(JSON.parse(pm.variables.get(\"email1\")));",
+                      "        pm.expect(jsonData.items[i].quantity).eql(targetItems[i].quantity); ",
+                      "    }",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n   \"email\": {{email1}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/cart/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "cart",
+                    "retrieve"
                   ]
                 }
               },
@@ -2114,77 +2271,6 @@
               "response": []
             },
             {
-              "name": "Shopping item does not exist (Case 312)",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                    "exec": [
-                      "",
-                      "pm.test(\"Status code is 200\", () => {",
-                      "    pm.response.to.have.status(200);",
-                      "});",
-                      "",
-                      "pm.test(\"Response has a body in json format\", () => {",
-                      "    pm.response.to.be.withBody;",
-                      "    pm.response.to.be.json;",
-                      "});",
-                      "",
-                      "pm.test('Response matches the required schema', () => {",
-                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
-                      "});",
-                      "",
-                      "pm.test(\"Response contains an error message\", () => {",
-                      "    let jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.resultCode).eql(312);",
-                      "",
-                      "    pm.expect(jsonData.message).not.eql(null);",
-                      "    pm.expect(jsonData.message).to.contain(\"Shopping item does not exist\");",
-                      "     ",
-                      "});",
-                      "",
-                      "pm.test(\"Response time is less than 1000ms\", function () {",
-                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                      "});",
-                      ""
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "name": "Content-Type",
-                    "type": "text",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{  \n    \"email\": {{email3}},\n\t\"movieId\": {{movie2}}\n}\n"
-                },
-                "url": {
-                  "raw": "http://{{host}}:{{port}}/api/billing/cart/delete",
-                  "protocol": "http",
-                  "host": [
-                    "{{host}}"
-                  ],
-                  "port": "{{port}}",
-                  "path": [
-                    "api",
-                    "billing",
-                    "cart",
-                    "delete"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
               "name": "Shopping cart item deleted successfully (Case 3120)",
               "event": [
                 {
@@ -2236,7 +2322,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie2}}\n} \n"
+                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie1}}\n} \n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/delete",
@@ -2250,6 +2336,163 @@
                     "billing",
                     "cart",
                     "delete"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Shopping item does not exist (Case 312)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(312);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Shopping item does not exist\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n    \"email\": {{email1}},\n\t\"movieId\": {{movie1}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/cart/delete",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "cart",
+                    "delete"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Retrieve to Verify",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), cartReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains a success message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(3130);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Shopping cart retrieved successfully\");",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains correct data\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    targetItems = JSON.parse(pm.variables.get(\"cartRetrieve3\"));",
+                      "    console.log(targetItems);",
+                      "    pm.expect(jsonData.items.length).eql(targetItems.length);",
+                      "    ",
+                      "    jsonData.items.sort(dynamicSort(\"movieId\"));",
+                      "    targetItems.sort(dynamicSort(\"movieId\"));",
+                      "    ",
+                      "    for (i = 0; i< targetItems.length; i++){",
+                      "        pm.expect(jsonData.items[i].movieId).eql(targetItems[i].movieId);",
+                      "        pm.expect(jsonData.items[i].email).eql(JSON.parse(pm.variables.get(\"email1\")));",
+                      "        pm.expect(jsonData.items[i].quantity).eql(targetItems[i].quantity); ",
+                      "    }",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n   \"email\": {{email1}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/cart/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "cart",
+                    "retrieve"
                   ]
                 }
               },
@@ -2540,6 +2783,77 @@
                     "billing",
                     "cart",
                     "clear"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Retrieve to Verify",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(312);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Shopping item does not exist\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n   \"email\": {{email1}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/cart/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "cart",
+                    "retrieve"
                   ]
                 }
               },
@@ -3256,6 +3570,470 @@
           "_postman_isSubFolder": true
         },
         {
+          "name": "Retrieve",
+          "item": [
+            {
+              "name": "JSON Mapping Exception - extra value (Case -2)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 400\", () => {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(-2);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"JSON Mapping Exception\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"extra\" : {{extraValue}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "creditcard",
+                    "retrieve"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Credit card ID has invalid length - too short (Case 321)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(321);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Credit card ID has invalid length\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": {{tooShortCreditCardId}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "creditcard",
+                    "retrieve"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Credit card ID has invalid length - too long (Case 321)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(321);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Credit card ID has invalid length\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": {{tooLongCreditCardId}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "creditcard",
+                    "retrieve"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Credit card ID has invalid value (Case 322)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(322);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Credit card ID has invalid value\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": {{invalidCreditCardId}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "creditcard",
+                    "retrieve"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Credit card retrieved successfully (Case 3230)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), creditcardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains a success message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(3230);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Credit card retrieved successfully\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains correct data\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      " ",
+                      "    pm.expect(jsonData.creditcard.id).eql(JSON.parse(pm.variables.get(\"creditCardId1\")));",
+                      "    pm.expect(jsonData.creditcard.firstName).eql(JSON.parse(pm.variables.get(\"firstName1\")));",
+                      "    pm.expect(jsonData.creditcard.lastName).eql(JSON.parse(pm.variables.get(\"lastName1\"))); ",
+                      "    pm.expect(jsonData.creditcard.expiration).eql(JSON.parse(pm.variables.get(\"date1\"))); ",
+                      "    ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": {{creditCardId1}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "creditcard",
+                    "retrieve"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Credit card does not exist (Case 324)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(324);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Credit card does not exist\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": {{creditCardId3}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "creditcard",
+                    "retrieve"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "eecc6249-85fb-4d77-b825-42ea93b30688",
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "040363be-45b4-4917-b1a2-67d50201c007",
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ],
+          "_postman_isSubFolder": true
+        },
+        {
           "name": "Update",
           "item": [
             {
@@ -3766,390 +4544,7 @@
               "response": []
             },
             {
-              "name": "Credit card does not exist (Case 324)",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                    "exec": [
-                      "",
-                      "pm.test(\"Status code is 200\", () => {",
-                      "    pm.response.to.have.status(200);",
-                      "});",
-                      "",
-                      "pm.test(\"Response has a body in json format\", () => {",
-                      "    pm.response.to.be.withBody;",
-                      "    pm.response.to.be.json;",
-                      "});",
-                      "",
-                      "pm.test('Response matches the required schema', () => {",
-                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
-                      "});",
-                      "",
-                      "pm.test(\"Response contains an error message\", () => {",
-                      "    let jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.resultCode).eql(324);",
-                      "",
-                      "    pm.expect(jsonData.message).not.eql(null);",
-                      "    pm.expect(jsonData.message).to.contain(\"Credit card does not exist\");",
-                      "     ",
-                      "});",
-                      "",
-                      "pm.test(\"Response time is less than 1000ms\", function () {",
-                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                      "});",
-                      ""
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "name": "Content-Type",
-                    "type": "text",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": {{creditCardId3}},\n    \"firstName\": {{firstName1}},\n    \"lastName\": {{lastName1}},\n    \"expiration\": {{date1}}\n}\n"
-                },
-                "url": {
-                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/update",
-                  "protocol": "http",
-                  "host": [
-                    "{{host}}"
-                  ],
-                  "port": "{{port}}",
-                  "path": [
-                    "api",
-                    "billing",
-                    "creditcard",
-                    "update"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ],
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "eecc6249-85fb-4d77-b825-42ea93b30688",
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "040363be-45b4-4917-b1a2-67d50201c007",
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            }
-          ],
-          "_postman_isSubFolder": true
-        },
-        {
-          "name": "Retrieve",
-          "item": [
-            {
-              "name": "JSON Mapping Exception - extra value (Case -2)",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                    "exec": [
-                      "",
-                      "pm.test(\"Status code is 400\", () => {",
-                      "    pm.response.to.have.status(400);",
-                      "});",
-                      "",
-                      "pm.test(\"Response has a body in json format\", () => {",
-                      "    pm.response.to.be.withBody;",
-                      "    pm.response.to.be.json;",
-                      "});",
-                      "",
-                      "pm.test('Response matches the required schema', () => {",
-                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
-                      "});",
-                      "",
-                      "pm.test(\"Response contains an error message\", () => {",
-                      "    let jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.resultCode).eql(-2);",
-                      "",
-                      "    pm.expect(jsonData.message).not.eql(null);",
-                      "    pm.expect(jsonData.message).to.contain(\"JSON Mapping Exception\");",
-                      "     ",
-                      "});",
-                      "",
-                      "pm.test(\"Response time is less than 1000ms\", function () {",
-                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                      "});",
-                      ""
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "name": "Content-Type",
-                    "type": "text",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"extra\" : {{extraValue}}\n}\n"
-                },
-                "url": {
-                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
-                  "protocol": "http",
-                  "host": [
-                    "{{host}}"
-                  ],
-                  "port": "{{port}}",
-                  "path": [
-                    "api",
-                    "billing",
-                    "creditcard",
-                    "retrieve"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Credit card ID has invalid length - too short (Case 321)",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                    "exec": [
-                      "",
-                      "pm.test(\"Status code is 200\", () => {",
-                      "    pm.response.to.have.status(200);",
-                      "});",
-                      "",
-                      "pm.test(\"Response has a body in json format\", () => {",
-                      "    pm.response.to.be.withBody;",
-                      "    pm.response.to.be.json;",
-                      "});",
-                      "",
-                      "pm.test('Response matches the required schema', () => {",
-                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
-                      "});",
-                      "",
-                      "pm.test(\"Response contains an error message\", () => {",
-                      "    let jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.resultCode).eql(321);",
-                      "",
-                      "    pm.expect(jsonData.message).not.eql(null);",
-                      "    pm.expect(jsonData.message).to.contain(\"Credit card ID has invalid length\");",
-                      "     ",
-                      "});",
-                      "",
-                      "pm.test(\"Response time is less than 1000ms\", function () {",
-                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                      "});",
-                      ""
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "name": "Content-Type",
-                    "type": "text",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": {{tooShortCreditCardId}}\n}\n"
-                },
-                "url": {
-                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
-                  "protocol": "http",
-                  "host": [
-                    "{{host}}"
-                  ],
-                  "port": "{{port}}",
-                  "path": [
-                    "api",
-                    "billing",
-                    "creditcard",
-                    "retrieve"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Credit card ID has invalid length - too long (Case 321)",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                    "exec": [
-                      "",
-                      "pm.test(\"Status code is 200\", () => {",
-                      "    pm.response.to.have.status(200);",
-                      "});",
-                      "",
-                      "pm.test(\"Response has a body in json format\", () => {",
-                      "    pm.response.to.be.withBody;",
-                      "    pm.response.to.be.json;",
-                      "});",
-                      "",
-                      "pm.test('Response matches the required schema', () => {",
-                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
-                      "});",
-                      "",
-                      "pm.test(\"Response contains an error message\", () => {",
-                      "    let jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.resultCode).eql(321);",
-                      "",
-                      "    pm.expect(jsonData.message).not.eql(null);",
-                      "    pm.expect(jsonData.message).to.contain(\"Credit card ID has invalid length\");",
-                      "     ",
-                      "});",
-                      "",
-                      "pm.test(\"Response time is less than 1000ms\", function () {",
-                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                      "});",
-                      ""
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "name": "Content-Type",
-                    "type": "text",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": {{tooLongCreditCardId}}\n}\n"
-                },
-                "url": {
-                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
-                  "protocol": "http",
-                  "host": [
-                    "{{host}}"
-                  ],
-                  "port": "{{port}}",
-                  "path": [
-                    "api",
-                    "billing",
-                    "creditcard",
-                    "retrieve"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Credit card ID has invalid value (Case 322)",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                    "exec": [
-                      "",
-                      "pm.test(\"Status code is 200\", () => {",
-                      "    pm.response.to.have.status(200);",
-                      "});",
-                      "",
-                      "pm.test(\"Response has a body in json format\", () => {",
-                      "    pm.response.to.be.withBody;",
-                      "    pm.response.to.be.json;",
-                      "});",
-                      "",
-                      "pm.test('Response matches the required schema', () => {",
-                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
-                      "});",
-                      "",
-                      "pm.test(\"Response contains an error message\", () => {",
-                      "    let jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.resultCode).eql(322);",
-                      "",
-                      "    pm.expect(jsonData.message).not.eql(null);",
-                      "    pm.expect(jsonData.message).to.contain(\"Credit card ID has invalid value\");",
-                      "     ",
-                      "});",
-                      "",
-                      "pm.test(\"Response time is less than 1000ms\", function () {",
-                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                      "});",
-                      ""
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "name": "Content-Type",
-                    "type": "text",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": {{invalidCreditCardId}}\n}\n"
-                },
-                "url": {
-                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
-                  "protocol": "http",
-                  "host": [
-                    "{{host}}"
-                  ],
-                  "port": "{{port}}",
-                  "path": [
-                    "api",
-                    "billing",
-                    "creditcard",
-                    "retrieve"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Credit card retrieved successfully (Case 3230)",
+              "name": "Retrieve to Verify",
               "event": [
                 {
                   "listen": "test",
@@ -4281,10 +4676,10 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": {{creditCardId3}}\n}\n"
+                  "raw": "{\n    \"id\": {{creditCardId3}},\n    \"firstName\": {{firstName1}},\n    \"lastName\": {{lastName1}},\n    \"expiration\": {{date1}}\n}\n"
                 },
                 "url": {
-                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
+                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/update",
                   "protocol": "http",
                   "host": [
                     "{{host}}"
@@ -4294,7 +4689,7 @@
                     "api",
                     "billing",
                     "creditcard",
-                    "retrieve"
+                    "update"
                   ]
                 }
               },
@@ -4749,6 +5144,77 @@
                     "billing",
                     "creditcard",
                     "delete"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Retrieve to Verify",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(324);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Credit card does not exist\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": {{creditCardId1}}\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/creditcard/retrieve",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "creditcard",
+                    "retrieve"
                   ]
                 }
               },
@@ -6355,32 +6821,6 @@
                   "script": {
                     "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
                     "exec": [
-                      "",
-                      "pm.test(\"Status code is 200\", () => {",
-                      "    pm.response.to.have.status(200);",
-                      "});",
-                      "",
-                      "pm.test(\"Response has a body in json format\", () => {",
-                      "    pm.response.to.be.withBody;",
-                      "    pm.response.to.be.json;",
-                      "});",
-                      "",
-                      "pm.test('Response matches the required schema', () => {",
-                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
-                      "});",
-                      "",
-                      "pm.test(\"Response contains a success message\", () => {",
-                      "    let jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.resultCode).eql(3100);",
-                      "",
-                      "    pm.expect(jsonData.message).not.eql(null);",
-                      "    pm.expect(jsonData.message).to.contain(\"Shopping cart item inserted successfully\");",
-                      "     ",
-                      "});",
-                      "",
-                      "pm.test(\"Response time is less than 1000ms\", function () {",
-                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                      "});",
                       ""
                     ],
                     "type": "text/javascript"
@@ -6393,26 +6833,35 @@
                     "exec": [
                       "m1 = \"tt\" + randomInt(100000,1000000).toString();",
                       "m2 = \"tt\" + randomInt(100000,1000000).toString();",
+                      "m3 = \"tt\" + randomInt(100000,1000000).toString();",
                       "q1 = randomInt(1,20);",
                       "q2 = randomInt(20,30);",
                       "q3 = randomInt(1,20);",
-                      "q4 = randomInt(20,30);",
+                      "q4 = randomInt(30,40);",
+                      "q5 = randomInt(100,200);",
                       "",
                       "pm.variables.set(\"movie1\", JSON.stringify(m1));",
                       "pm.variables.set(\"movie2\", JSON.stringify(m2));",
+                      "pm.variables.set(\"movie3\", JSON.stringify(m3));",
                       "pm.variables.set(\"quantity1\", JSON.stringify(q1));",
                       "pm.variables.set(\"quantity2\", JSON.stringify(q2));",
                       "pm.variables.set(\"quantity3\", JSON.stringify(q3));",
                       "pm.variables.set(\"quantity4\", JSON.stringify(q4));",
+                      "pm.variables.set(\"quantity5\", JSON.stringify(q5));",
                       "",
                       "pm.variables.set(\"orderMovies\", JSON.stringify([ {",
                       "            \"movieId\": m1,",
-                      "            \"quantity\": q1",
+                      "            \"quantity\": q2",
                       "        },",
                       "        {",
                       "            \"movieId\": m2,",
-                      "            \"quantity\": q3",
+                      "            \"quantity\": q4",
+                      "        },",
+                      "        {",
+                      "            \"movieId\": m3,",
+                      "            \"quantity\": q5",
                       "        }",
+                      "        ",
                       "]))",
                       ""
                     ],
@@ -6432,7 +6881,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie1}},\n   \"quantity\": {{quantity1}}\n} \n"
+                  "raw": "{  \n   \"email\": {{customerEmail}},\n   \"movieId\": {{movie1}},\n   \"quantity\": {{quantity1}}\n} \n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/insert",
@@ -6452,39 +6901,13 @@
               "response": []
             },
             {
-              "name": "Insert Movie2 to Shopping Cart",
+              "name": "Update Movie1's Quantity",
               "event": [
                 {
                   "listen": "test",
                   "script": {
                     "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
                     "exec": [
-                      "",
-                      "pm.test(\"Status code is 200\", () => {",
-                      "    pm.response.to.have.status(200);",
-                      "});",
-                      "",
-                      "pm.test(\"Response has a body in json format\", () => {",
-                      "    pm.response.to.be.withBody;",
-                      "    pm.response.to.be.json;",
-                      "});",
-                      "",
-                      "pm.test('Response matches the required schema', () => {",
-                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
-                      "});",
-                      "",
-                      "pm.test(\"Response contains a success message\", () => {",
-                      "    let jsonData = pm.response.json();",
-                      "    pm.expect(jsonData.resultCode).eql(3100);",
-                      "",
-                      "    pm.expect(jsonData.message).not.eql(null);",
-                      "    pm.expect(jsonData.message).to.contain(\"Shopping cart item inserted successfully\");",
-                      "     ",
-                      "});",
-                      "",
-                      "pm.test(\"Response time is less than 1000ms\", function () {",
-                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                      "});",
                       ""
                     ],
                     "type": "text/javascript"
@@ -6495,7 +6918,6 @@
                   "script": {
                     "id": "6215a26e-cd74-47d9-939b-b0201417edbb",
                     "exec": [
-                      "",
                       ""
                     ],
                     "type": "text/javascript"
@@ -6514,7 +6936,62 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}},\n   \"movieId\": {{movie2}},\n   \"quantity\": {{quantity3}}\n} \n"
+                  "raw": "{  \n   \"email\": {{customerEmail}},\n   \"movieId\": {{movie1}},\n   \"quantity\": {{quantity2}}\n} \n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "cart",
+                    "update"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Insert Movie2 to Shopping Cart",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "6215a26e-cd74-47d9-939b-b0201417edbb",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n   \"email\": {{customerEmail}},\n   \"movieId\": {{movie2}},\n   \"quantity\": {{quantity3}}\n} \n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/cart/insert",
@@ -6528,6 +7005,116 @@
                     "billing",
                     "cart",
                     "insert"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Insert Movie3 to Shopping Cart",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "6215a26e-cd74-47d9-939b-b0201417edbb",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n   \"email\": {{customerEmail}},\n   \"movieId\": {{movie3}},\n   \"quantity\": {{quantity5}}\n} \n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/cart/insert",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "cart",
+                    "insert"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Movie2's Quantity",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "6215a26e-cd74-47d9-939b-b0201417edbb",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n   \"email\": {{customerEmail}},\n   \"movieId\": {{movie2}},\n   \"quantity\": {{quantity4}}\n} \n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/cart/update",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "cart",
+                    "update"
                   ]
                 }
               },
@@ -6585,7 +7172,78 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{  \n   \"email\": {{email1}}\n} \n"
+                  "raw": "{  \n   \"email\": {{customerEmail}}\n} \n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/billing/order/place",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "billing",
+                    "order",
+                    "place"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Verify Shopping Cart to be Empty",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
+                    "exec": [
+                      "",
+                      "pm.test(\"Status code is 200\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has a body in json format\", () => {",
+                      "    pm.response.to.be.withBody;",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test('Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(pm.response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an error message\", () => {",
+                      "    let jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(341);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Shopping cart for this customer not found\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is less than 1000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{  \n   \"email\": {{customerEmail}}\n} \n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/order/place",
@@ -6732,7 +7390,7 @@
                       "    ",
                       "    for (i = 0; i< targetItems.length; i++){",
                       "        pm.expect(jsonData.items[i].movieId).eql(targetItems[i].movieId);",
-                      "        pm.expect(jsonData.items[i].email).eql(JSON.parse(pm.variables.get(\"email1\")));",
+                      "        pm.expect(jsonData.items[i].email).eql(JSON.parse(pm.variables.get(\"customerEmail\")));",
                       "        pm.expect(jsonData.items[i].quantity).eql(targetItems[i].quantity); ",
                       "    }",
                       "});",
@@ -6758,7 +7416,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": {{email1}}\n}\n"
+                  "raw": "{\n    \"email\": {{customerEmail}}\n}\n"
                 },
                 "url": {
                   "raw": "http://{{host}}:{{port}}/api/billing/order/retrieve",
@@ -6811,6 +7469,36 @@
                       "pm.test(\"Response time is less than 1000ms\", function () {",
                       "    pm.expect(pm.response.responseTime).to.be.below(1000);",
                       "});",
+                      "",
+                      "",
+                      "pm.variables.unset(\"email1\");",
+                      "pm.variables.unset(\"email2\");",
+                      "pm.variables.unset(\"email3\");",
+                      "pm.variables.unset(\"movie1\");",
+                      "pm.variables.unset(\"movie2\");",
+                      "pm.variables.unset(\"movie3\");",
+                      "pm.variables.unset(\"quantity1\");",
+                      "pm.variables.unset(\"quantity2\");",
+                      "pm.variables.unset(\"quantity3\");",
+                      "pm.variables.unset(\"quantity4\");",
+                      "pm.variables.unset(\"quantity5\");",
+                      "pm.variables.unset(\"firstName1\");",
+                      "pm.variables.unset(\"firstName2\");",
+                      "pm.variables.unset(\"firstName3\");",
+                      "pm.variables.unset(\"firstName4\");",
+                      "pm.variables.unset(\"lastName1\");",
+                      "pm.variables.unset(\"lastName2\");",
+                      "pm.variables.unset(\"lastName3\");",
+                      "pm.variables.unset(\"lastName4\");"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "184abc5e-dd39-4d77-b960-869efb907cee",
+                    "exec": [
                       ""
                     ],
                     "type": "text/javascript"
