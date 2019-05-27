@@ -1,2366 +1,1876 @@
 {
   "info": {
-    "_postman_id": "410dd9fd-542e-4a9b-90be-87f3ca97d3f3",
-    "name": "IDMService",
+    "_postman_id": "adee5d5a-b117-4944-8027-58b3aeb36fa1",
+    "name": "MoviesRevisedService",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Register",
+      "name": "Movie",
       "item": [
         {
-          "name": "/api/idm/register - Email already in use (Case 16)",
-          "event": [
+          "name": "Search",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(16);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email already in use\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
+              "name": "Title Search",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "7aacde18-935a-4054-a8cd-bc4461d3c0ed",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"sessionID\");",
+                      "pm.variables.set(\"sessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), moviesReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response contains a success message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(210);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"Found movies with search parameters\");",
+                      "     ",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains correct data\", () => {",
+                      "        let jsonData = response.json();",
+                      "        targetItems = JSON.parse(pm.variables.get(\"titleSearchMovieData\"));",
+                      "        console.log(targetItems);",
+                      "        pm.expect(jsonData.movies.length).eql(targetItems.length);",
+                      "    ",
+                      "        jsonData.movies.sort(dynamicSort(\"movieId\"));",
+                      "        targetItems.sort(dynamicSort(\"movieId\"));",
+                      "    ",
+                      "        for (i = 0; i< targetItems.length; i++){",
+                      "            pm.expect(jsonData.movies[i].movieId).eql(targetItems[i].movieId);",
+                      "            pm.expect(jsonData.movies[i].title).eql(targetItems[i].title); ",
+                      "            pm.expect(jsonData.movies[i].director).eql(targetItems[i].director);",
+                      "            pm.expect(jsonData.movies[i].year).eql(targetItems[i].year);",
+                      "            pm.expect(jsonData.movies[i].rating).eql(targetItems[i].rating);",
+                      "            pm.expect(jsonData.movies[i].numVotes).eql(targetItems[i].numVotes);",
+                      "                                    ",
+                      "        }",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"email\"), pm.variables.get(\"sessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "b7d1093c-c600-486e-b112-c1c45df3a7cb",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{email}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{sessionID}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
                 ],
-                "type": "text/javascript"
-              }
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/search?title={{searchTitle}}&genre={{searchGenre}}&limit={{limit}}&offset={{offset}}&orderby={{orderBy}}&direction={{direction}}",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "title",
+                      "value": "{{searchTitle}}"
+                    },
+                    {
+                      "key": "genre",
+                      "value": "{{searchGenre}}"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "{{limit}}"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "{{offset}}"
+                    },
+                    {
+                      "key": "orderby",
+                      "value": "{{orderBy}}"
+                    },
+                    {
+                      "key": "direction",
+                      "value": "{{direction}}"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Genre Search",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "7aacde18-935a-4054-a8cd-bc4461d3c0ed",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"sessionID\");",
+                      "pm.variables.set(\"sessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), moviesReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response contains a success message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(210);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"Found movies with search parameters\");",
+                      "     ",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains correct data\", () => {",
+                      "        let jsonData = response.json();",
+                      "        targetItems = JSON.parse(pm.variables.get(\"genreSearchMovieData\"));",
+                      "        console.log(targetItems);",
+                      "        pm.expect(jsonData.movies.length).eql(targetItems.length);",
+                      "    ",
+                      "        jsonData.movies.sort(dynamicSort(\"movieId\"));",
+                      "        targetItems.sort(dynamicSort(\"movieId\"));",
+                      "    ",
+                      "        for (i = 0; i< targetItems.length; i++){",
+                      "            pm.expect(jsonData.movies[i].movieId).eql(targetItems[i].movieId);",
+                      "            pm.expect(jsonData.movies[i].title).eql(targetItems[i].title); ",
+                      "            pm.expect(jsonData.movies[i].director).eql(targetItems[i].director);",
+                      "            pm.expect(jsonData.movies[i].year).eql(targetItems[i].year);",
+                      "            pm.expect(jsonData.movies[i].rating).eql(targetItems[i].rating);",
+                      "            pm.expect(jsonData.movies[i].numVotes).eql(targetItems[i].numVotes);",
+                      "                                    ",
+                      "        }",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"email\"), pm.variables.get(\"sessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "b7d1093c-c600-486e-b112-c1c45df3a7cb",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{email}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{sessionID}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/search?genre={{searchGenre}}&limit={{limit2}}&offset={{offset2}}&orderby={{orderBy2}}&direction={{direction2}}",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "genre",
+                      "value": "{{searchGenre}}"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "{{limit2}}"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "{{offset2}}"
+                    },
+                    {
+                      "key": "orderby",
+                      "value": "{{orderBy2}}"
+                    },
+                    {
+                      "key": "direction",
+                      "value": "{{direction2}}"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "No Found Search",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "7aacde18-935a-4054-a8cd-bc4461d3c0ed",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"sessionID\");",
+                      "pm.variables.set(\"sessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response contains a success message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(211);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"No movies found with search parameters\");",
+                      "     ",
+                      "    });",
+                      "    ",
+                      "    ",
+                      "",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"email\"), pm.variables.get(\"sessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{sessionID}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "email",
+                    "value": "{{email}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/search?title={{noFoundSearchTitle}}&genre={{searchGenre}}&limit={{limit}}&offset={{offset}}&orderby={{orderBy}}&direction={{direction}}",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "title",
+                      "value": "{{noFoundSearchTitle}}"
+                    },
+                    {
+                      "key": "genre",
+                      "value": "{{searchGenre}}"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "{{limit}}"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "{{offset}}"
+                    },
+                    {
+                      "key": "orderby",
+                      "value": "{{orderBy}}"
+                    },
+                    {
+                      "key": "direction",
+                      "value": "{{direction}}"
+                    }
+                  ]
+                }
+              },
+              "response": []
             }
           ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{existingEmail}},\n    \"password\": {{password}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/register - tooShortPwd (Case 12)",
           "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(12);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Password does not meet length requirements\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{email2}},\n    \"password\": {{tooShortPassword}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/register - invalidFormatEmail (Case -11)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-11);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email address has invalid format\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{invalidFormatEmail}},\n    \"password\": {{password}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/register - json parse exception (Case -3)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ba0a5722-26a6-4d95-bffd-877fc388755f",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).not.eql(null);",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.resultCode).eql(-3);",
-                  "    pm.expect(jsonData.message).to.contain(\"JSON Parse Exception\");",
-                  "});",
-                  "",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{{invalidJson}}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/register - null password (Case -12)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-12);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Password has invalid length\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{email3}},\n    \"password\": null\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/register - empty password (Case -12)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-12);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Password has invalid length\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{email4}},\n    \"password\": \"\"\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/register - too long email (Case -10)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-10);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email address has invalid length\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{tooLongEmail}},\n    \"password\": {{password}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/register - Password dos not meet character requirements (Case 13)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(13);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Password does not meet character requirements\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{email5}},\n    \"password\": {{invalidCharReqPassword}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/register - json mapping exception (Case -2)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-2);",
-                  "    pm.expect(jsonData).not.eql(null);",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"JSON Mapping Exception\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{email6}},\n    \"password\": {{password}},\n    \"extraValues\": {{extraValue}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/register",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Privilege",
-      "item": [
-        {
-          "name": "/api/idm/privilege - valid (Case 140)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "adc7d178-8fb6-4688-ae79-c492f0159afc",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains a success message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(140);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"User has sufficient privilege level\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{existingEmail}},\n    \"plevel\": {{plevel}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/privilege",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "privilege"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/privilege - insufficient privilege (Case 141)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "adc7d178-8fb6-4688-ae79-c492f0159afc",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains a success message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(141);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"User has insufficient privilege level\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{existingEmail}},\n    \"plevel\": {{insufficientPlevel}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/privilege",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "privilege"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/privilege - out of range (Case -14)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "adc7d178-8fb6-4688-ae79-c492f0159afc",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-14);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Privilege level out of valid range\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{existingEmail}},\n    \"plevel\": {{outOfRangePlevel}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/privilege",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "privilege"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/privilege - invalidFormatEmail (Case -11)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-11);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email address has invalid format\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{invalidFormatEmail}},\n    \"plevel\": {{plevel}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/privilege",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "privilege"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/privilege - too long email (Case -10)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-10);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email address has invalid length\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{tooLongEmail}},\n    \"plevel\": {{plevel}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/privilege",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "privilege"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/privilege - json parse exception (Case -3)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ba0a5722-26a6-4d95-bffd-877fc388755f",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).not.eql(null);",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.resultCode).eql(-3);",
-                  "    pm.expect(jsonData.message).to.contain(\"JSON Parse Exception\");",
-                  "});",
-                  "",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{{invalidJson}}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/privilege",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "privilege"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/privilege - json mapping exception (Case -2)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-2);",
-                  "    pm.expect(jsonData).not.eql(null);",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"JSON Mapping Exception\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{existingEmail}},\n    \"plevel\": {{plevel}},\n    \"extraValues\": {{extraValue}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/privilege",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "privilege"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Login",
-      "item": [
-        {
-          "name": "/api/idm/login - invalidPasswordLength (Case -12)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-12);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Password has invalid length\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{existingEmail}},\n    \"password\": null\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/login - invalidEmailAddrFormat (Case -11)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-11);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email address has invalid format\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{invalidFormatEmail}},\n    \"password\": {{password}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/login - invalidEmailAddrLength (Case -10)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-10);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email address has invalid length\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{tooLongEmail}},\n    \"password\": {{password}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/login - JSONParseException (Case -3)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-3);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"JSON Parse Exception\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{{invalidJson}}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/login - JSONMappingException (Case -2)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "2ad5a786-e956-4eba-b4f9-5c1cb7be4c2e",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-2);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"JSON Mapping Exception\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{existingEmail}},\n    \"password\": {{password}},\n    \"extraValues\": {{extraValue}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "VerifySession",
-      "item": [
-        {
-          "name": "/api/idm/session - Session is active (case 130)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"sessionReturnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains a success message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(130);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is active\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
             {
               "listen": "prerequest",
               "script": {
-                "id": "56372c2b-a121-4217-8f09-588e73f8f49a",
+                "id": "30a9f9f6-9bee-4d3e-b776-fb0fef8c3115",
+                "type": "text/javascript",
                 "exec": [
-                  "const email = randomString(randomInt(3,10))+ '@test.com';",
-                  "pm.variables.set('email', JSON.stringify(email));",
-                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
-                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
-                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
-                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
-                  "   });",
-                  "});",
-                  "setTimeout(function(){}, [2000]);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/session - Session is closed (case 132)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(132);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is closed\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
                   ""
-                ],
-                "type": "text/javascript"
+                ]
               }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{closedSessionEmail}},\n\t\"sessionID\":{{closedSessionID}}\n}"
             },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Revoke after Timeout",
-          "event": [
             {
               "listen": "test",
               "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
+                "id": "2cba8fe2-7110-43c7-8fd9-f479b55028e2",
+                "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(133);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is revoked\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
                   ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "4a718b66-40ec-4fad-9ffe-fbf7b3ad6b1b",
-                "exec": [
-                  "const email = randomString(randomInt(3,10))+ '@test.com';",
-                  "pm.variables.set('email', JSON.stringify(email));",
-                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
-                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
-                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
-                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
-                  "   });",
-                  "});",
-                  "setTimeout(function(){}, [6500]);"
-                ],
-                "type": "text/javascript"
+                ]
               }
             }
           ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
+          "_postman_isSubFolder": true
         },
         {
-          "name": "/api/idm/session - Session is revoked (case 133)",
-          "event": [
+          "name": "Add",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(133);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is revoked\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
+              "name": "User has insufficient privilege (Case 141)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "d7669b9d-5e70-48c3-b16c-d1f00ea64735",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"sessionID\");",
+                      "pm.variables.set(\"sessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "pm.test('[Report Request] Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response contains an error message\", () => {",
+                      "    let jsonData = response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(141);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"User has insufficient privilege\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "    pm.expect(response.responseTime).to.be.below(500);",
+                      "});",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"email\"), pm.variables.get(\"sessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "f7589586-6ecc-4b9d-8c39-819c1c2c3b56",
+                    "exec": [
+                      "pm.variables.set(\"addMovieTitle\", JSON.stringify(randomString(10)));",
+                      "pm.variables.set(\"addMovieDirector\", JSON.stringify(randomString(10)));",
+                      "pm.variables.set(\"addMovieYear\", randomInt(2020, 2024));",
+                      "pm.variables.set(\"addMovieBudget\", randomInt(1, 999));",
+                      "pm.variables.set(\"addMovieRevenue\", randomInt(1, 999));",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{email}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{sessionID}}"
+                  }
                 ],
-                "type": "text/javascript"
-              }
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": {{addMovieTitle}},\n    \"director\":{{addMovieDirector}},\n    \"year\": {{addMovieYear}},\n    \"budget\": {{addMovieBudget}},\n    \"revenue\": {{addMovieRevenue}},\n    \"genres\": {{addMovieGenres}}\n}"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/add",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "add"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Movie added successfully  (Case 214)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "b32a3601-843f-4b07-93cd-8b84a7c8ce3e",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "4f090730-8c49-452c-a7cb-220256a35115",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"adminSessionID\");",
+                      "pm.variables.set(\"adminSessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), movieAddReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains a success message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(214);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"Movie successfully added\");",
+                      "         ",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response contains correct data\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.movieid).to.contain(\"cs00\");",
+                      "        pm.variables.set(\"movieId\", jsonData.movieid);",
+                      "        console.log(jsonData.movieid)",
+                      "        pm.expect(jsonData.genreid).to.eql(JSON.parse(pm.variables.get(\"addGenreArray\")));",
+                      "        ",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"adminEmail\"), pm.variables.get(\"adminSessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "email",
+                    "value": "{{adminEmail}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "sessionID",
+                    "value": "{{adminSessionID}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": {{addMovieTitle}},\n    \"director\":{{addMovieDirector}},\n    \"year\": {{addMovieYear}},\n    \"budget\": {{addMovieBudget}},\n    \"revenue\": {{addMovieRevenue}},\n    \"genres\": {{addMovieGenres}}\n}"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/add",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "add"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Movie added successfully with new genre (Case 214)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "b32a3601-843f-4b07-93cd-8b84a7c8ce3e",
+                    "exec": [
+                      "pm.variables.set(\"addMovieTitle\", JSON.stringify(randomString(10)));",
+                      "pm.variables.set(\"addMovieDirector\", JSON.stringify(randomString(10)));",
+                      "pm.variables.set(\"addMovieYear\", randomInt(2020, 2024));",
+                      "pm.variables.set(\"addMovieBudget\", randomInt(1, 999));",
+                      "pm.variables.set(\"addMovieRevenue\", randomInt(1, 999));",
+                      "pm.variables.set(\"addMovieGenres2\", JSON.stringify( [{'id': 1, \"name\": \"newGenre\"}, {'id': 1, \"name\": \"action\"}, {'id':19,\"name\": \"Sci-Fi\"}]));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "4f090730-8c49-452c-a7cb-220256a35115",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"adminSessionID\");",
+                      "pm.variables.set(\"adminSessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), movieAddReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains a success message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(214);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"Movie successfully added\");",
+                      "         ",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains correct data\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.movieid).to.contain(\"cs00\");",
+                      "        pm.expect(jsonData.genreid.sort()[jsonData.genreid.length-1]).above(23);",
+                      "        ",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"adminEmail\"), pm.variables.get(\"adminSessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{adminEmail}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{adminSessionID}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": {{addMovieTitle}},\n    \"director\":{{addMovieDirector}},\n    \"year\": {{addMovieYear}},\n    \"budget\": {{addMovieBudget}},\n    \"revenue\": {{addMovieRevenue}},\n    \"genres\": {{addMovieGenres2}}\n}"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/add",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "add"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Movie already exists (Case 216)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "0be17894-c109-4505-8e1e-39388ce362a1",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "19bff932-c632-43ce-b0d5-bebe4b2e880c",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"adminSessionID\");",
+                      "pm.variables.set(\"adminSessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "pm.test('[Report Request] Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response contains an error message\", () => {",
+                      "    let jsonData = response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(216);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Movie already exists\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "    pm.expect(response.responseTime).to.be.below(500);",
+                      "});",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"adminEmail\"), pm.variables.get(\"adminSessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "email",
+                    "value": "{{adminEmail}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "sessionID",
+                    "value": "{{adminSessionID}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": {{addMovieTitle}},\n    \"director\":{{addMovieDirector}},\n    \"year\": {{addMovieYear}},\n    \"budget\": {{addMovieBudget}},\n    \"revenue\": {{addMovieRevenue}},\n    \"genres\": {{addMovieGenres}}\n}"
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/add",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "add"
+                  ]
+                }
+              },
+              "response": []
             }
           ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
+          "_postman_isSubFolder": true
         },
         {
-          "name": "Renew before Timeout",
-          "event": [
+          "name": "Retrieve",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"sessionReturnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains a success message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(130);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is active\");",
-                  "    pm.expect(jsonData.sessionID).not.to.eql(JSON.parse(pm.variables.get(\"sessionID\")));",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
+              "name": "Found movies with search parameters (Case 210)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "9e263167-18cc-4c96-8e44-dd81348ed8e7",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"sessionID\");",
+                      "pm.variables.set(\"sessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), movieReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains a success message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(210);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"Found movies with search parameters\");",
+                      "         ",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response contains correct data\", () => {",
+                      "        let jsonData = response.json();",
+                      "        let targetData = JSON.parse(pm.variables.get(\"addMovieGenres2\"));",
+                      "        ",
+                      "        jsonData.genres.sort(dynamicSort(\"id\"));",
+                      "        pm.expect(jsonData.title).to.eql(pm.variables.get(\"addMovieTitle\"));",
+                      "        pm.expect(jsonData.director).to.eql(pm.variables.get(\"addMovieDirector\"));",
+                      "        pm.expect(jsonData.year).to.eql(pm.variables.get(\"addMovieYear\"));",
+                      "        pm.expect(jsonData.budget).to.eql(pm.variables.get(\"addMovieBudget\"));",
+                      "        pm.expect(jsonData.revenue).to.eql(pm.variables.get(\"addMovieRevenue\"));",
+                      "        ",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"email\"), pm.variables.get(\"sessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{email}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{sessionID}}"
+                  }
                 ],
-                "type": "text/javascript"
-              }
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/get/{{movieId}}",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "get",
+                    "{{movieId}}"
+                  ]
+                }
+              },
+              "response": []
             },
             {
-              "listen": "prerequest",
-              "script": {
-                "id": "4a718b66-40ec-4fad-9ffe-fbf7b3ad6b1b",
-                "exec": [
-                  "const email = randomString(randomInt(3,10))+ '@test.com';",
-                  "pm.variables.set('email', JSON.stringify(email));",
-                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
-                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
-                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
-                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
-                  "   });",
-                  "});",
-                  "setTimeout(function(){}, [4000]);"
+              "name": "No movies found with search parameters (Case 211)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "9e263167-18cc-4c96-8e44-dd81348ed8e7",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"sessionID\");",
+                      "pm.variables.set(\"sessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains a success message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(211);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"No movies found with search parameters\");",
+                      "         ",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"email\"), pm.variables.get(\"sessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{email}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{sessionID}}"
+                  }
                 ],
-                "type": "text/javascript"
-              }
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/get/nonExisitingMovieId",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "get",
+                    "nonExisitingMovieId"
+                  ]
+                }
+              },
+              "response": []
             }
           ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
+          "_postman_isSubFolder": true
         },
         {
-          "name": "/api/idm/session - Session is expired (case 131)",
-          "event": [
+          "name": "Delete",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(131);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session is expired\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
+              "name": "User has insufficient privilege (Case 141)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "d7669b9d-5e70-48c3-b16c-d1f00ea64735",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"sessionID\");",
+                      "pm.variables.set(\"sessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains an error message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(141);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"User has insufficient privilege\");",
+                      "         ",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"email\"), pm.variables.get(\"sessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "e8989a54-afd0-4edb-bcd1-aed549cf3b1e",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{email}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{sessionID}}"
+                  }
                 ],
-                "type": "text/javascript"
-              }
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/delete/{{movieId}}",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "delete",
+                    "{{movieId}}"
+                  ]
+                }
+              },
+              "response": []
             },
             {
-              "listen": "prerequest",
-              "script": {
-                "id": "25a53bbd-f102-4f0d-9995-e9e11a0822de",
-                "exec": [
-                  "const email = randomString(randomInt(3,10))+ '@test.com';",
-                  "pm.variables.set('email', JSON.stringify(email));",
-                  "const password = [randomString(1), randomString(1),randomString(1),'@',randomString(1),randomString(1),'a','2','A',randomString(1),randomString(1)]",
-                  "pm.sendRequest(requestBuilder('/api/idm/register', {email, password}), ()=>{",
-                  "   pm.sendRequest(requestBuilder('/api/idm/login', {email, password}), (err, res) => {",
-                  "       pm.variables.set('sessionID', JSON.stringify(res.json().sessionID));",
-                  "   });",
-                  "});",
-                  "setTimeout(function(){}, [9000]);"
+              "name": "Movie successfully removed (Case 240)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "9e263167-18cc-4c96-8e44-dd81348ed8e7",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"adminSessionID\");",
+                      "pm.variables.set(\"adminSessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "pm.test('[Report Request] Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response contains a success message\", () => {",
+                      "    let jsonData = response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(240);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Movie successfully removed\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "    pm.expect(response.responseTime).to.be.below(500);",
+                      "});",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"adminEmail\"), pm.variables.get(\"adminSessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{adminEmail}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{adminSessionID}}"
+                  }
                 ],
-                "type": "text/javascript"
-              }
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/delete/{{movieId}}",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "delete",
+                    "{{movieId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Movie has been already removed (Case 242)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "eb10b6a8-3d07-4f15-9c55-6f6dc849f239",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"adminSessionID\");",
+                      "pm.variables.set(\"adminSessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "pm.test('[Report Request] Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response contains an error message\", () => {",
+                      "    let jsonData = response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(242);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Movie has been already removed\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "    pm.expect(response.responseTime).to.be.below(500);",
+                      "});",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"adminEmail\"), pm.variables.get(\"adminSessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{adminEmail}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{adminSessionID}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/delete/{{movieId}}",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "delete",
+                    "{{movieId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Could not remove movie (Case 241)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "eb10b6a8-3d07-4f15-9c55-6f6dc849f239",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"adminSessionID\");",
+                      "pm.variables.set(\"adminSessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "pm.test('[Report Request] Response matches the required schema', () => {",
+                      "    pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response contains an error message\", () => {",
+                      "    let jsonData = response.json();",
+                      "    pm.expect(jsonData.resultCode).eql(241);",
+                      "",
+                      "    pm.expect(jsonData.message).not.eql(null);",
+                      "    pm.expect(jsonData.message).to.contain(\"Could not remove movie\");",
+                      "     ",
+                      "});",
+                      "",
+                      "pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "    pm.expect(response.responseTime).to.be.below(500);",
+                      "});",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"adminEmail\"), pm.variables.get(\"adminSessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{adminEmail}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{adminSessionID}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/delete/nonExisitingMovieId",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "delete",
+                    "nonExisitingMovieId"
+                  ]
+                }
+              },
+              "response": []
             }
           ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{email}},\n\t\"sessionID\":{{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
+          "_postman_isSubFolder": true
         },
         {
-          "name": "/api/idm/session - Session not found (case 134)",
-          "event": [
+          "name": "Hidden Retrieve",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(134);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Session not found\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
+              "name": "User has insufficient privilege (Case 141)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "d7669b9d-5e70-48c3-b16c-d1f00ea64735",
+                    "exec": [
+                      "pm.test(\"[Initial Request] Status code is 204\", function () {",
+                      "    pm.expect(pm.response.code).eql(204);",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a transactionID\", function () {",
+                      "    pm.response.to.have.header(\"transactionID\");",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response contains a sessionID\", function () {",
+                      "    pm.response.to.have.header(\"sessionID\");",
+                      "});",
+                      "",
+                      "let transactionId = pm.response.headers.get(\"transactionID\");",
+                      "pm.variables.unset(\"sessionID\");",
+                      "pm.variables.set(\"sessionID\", pm.response.headers.get(\"sessionID\"));",
+                      "",
+                      "pm.test(\"[Initial Request] Response body should be empty\", function () {",
+                      "    pm.response.to.not.be.withBody;",
+                      "});",
+                      "",
+                      "pm.test(\"[Initial Request] Response time is less than 800ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(800);",
+                      "});",
+                      "",
+                      "",
+                      "endPointTests = (response) => {",
+                      "    pm.test(\"[Report Request] Status code is 200\", function () {",
+                      "        pm.expect(response.code).eql(200);",
+                      "    });",
+                      "",
+                      "    pm.test(\"[Report Request] Response has a body in json format\", function () {",
+                      "        pm.expect(response.json()).not.eql(null);",
+                      "    });",
+                      "",
+                      "    pm.test('[Report Request] Response matches the required schema', () => {",
+                      "        pm.expect(tv4.validate(response.json(), standardReturnSchema, false, true)).to.be.true;",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response contains an error message\", () => {",
+                      "        let jsonData = response.json();",
+                      "        pm.expect(jsonData.resultCode).eql(141);",
+                      "    ",
+                      "        pm.expect(jsonData.message).not.eql(null);",
+                      "        pm.expect(jsonData.message).to.contain(\"User has insufficient privilege\");",
+                      "         ",
+                      "    });",
+                      "    ",
+                      "    pm.test(\"[Report Request] Response time is less than 500ms\", function () {",
+                      "        pm.expect(response.responseTime).to.be.below(500);",
+                      "    });",
+                      "}",
+                      "",
+                      "(report = (n) => {",
+                      "    if (n < 0) return endPointTests(null);",
+                      "    else  setTimeout(()=>{",
+                      "        pm.sendRequest(requestBuilder(\"/api/g/report\", \"GET\", transactionId, pm.variables.get(\"email\"), pm.variables.get(\"sessionID\"),{}), (err, res) => {",
+                      "                if (res.code == 204) report(n-1);",
+                      "                else endPointTests(res)",
+                      "        });",
+                      "    }, 500)",
+                      "})(numOfPulls);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "e8989a54-afd0-4edb-bcd1-aed549cf3b1e",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "type": "text",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "email",
+                    "type": "text",
+                    "value": "{{email}}"
+                  },
+                  {
+                    "key": "sessionID",
+                    "type": "text",
+                    "value": "{{sessionID}}"
+                  }
                 ],
-                "type": "text/javascript"
-              }
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "http://{{host}}:{{port}}/api/g/movies/get/{{movieId}}",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "{{port}}",
+                  "path": [
+                    "api",
+                    "g",
+                    "movies",
+                    "get",
+                    "{{movieId}}"
+                  ]
+                }
+              },
+              "response": []
             }
           ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{closedSessionEmail}},\n\t\"sessionID\":{{unfoundSessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/session - User not found (case 14)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(14);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"User not found\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"email\":{{nonExistingEmail}},\n\t\"sessionID\":{{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/session - invalidFormatEmail (Case -11)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-11);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email address has invalid format\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{invalidFormatEmail}},\n    \"sessionID\": {{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/session - too long email (Case -10)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-10);",
-                  "",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"Email address has invalid length\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{tooLongEmail}},\n    \"sessionID\": {{sessionID}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/session - json parse exception (Case -3)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).not.eql(null);",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.resultCode).eql(-3);",
-                  "    pm.expect(jsonData.message).to.contain(\"JSON Parse Exception\");",
-                  "});",
-                  "",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{{invalidJson}}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/api/idm/session - json mapping exception (Case -2)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ab80a059-2963-4b20-89f9-296cd578175c",
-                "exec": [
-                  "pm.test(\"Status code is 400\", function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test(\"Response has a body in json format\", function () {",
-                  "    pm.response.to.be.withBody;",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test('Response matches the required schema', function() {",
-                  "    pm.expect(tv4.validate(pm.response.json(), JSON.parse(pm.variables.get(\"returnSchema\")),false, true)).to.be.true;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an error message\", function () {",
-                  "    let jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.resultCode).eql(-2);",
-                  "    pm.expect(jsonData).not.eql(null);",
-                  "    pm.expect(jsonData.message).not.eql(null);",
-                  "    pm.expect(jsonData.message).to.contain(\"JSON Mapping Exception\");",
-                  "    ",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 1000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": {{email1}},\n    \"password\": {{password}},\n    \"extraValues\": {{extraValue}}\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:{{port}}/api/idm/session",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "{{port}}",
-              "path": [
-                "api",
-                "idm",
-                "session"
-              ]
-            }
-          },
-          "response": []
+          "_postman_isSubFolder": true
         }
       ]
     }
@@ -2369,10 +1879,10 @@
     {
       "listen": "prerequest",
       "script": {
-        "id": "52479263-9522-44e5-af0b-3e0820d7afa2",
+        "id": "8926adca-3e70-4b29-bcad-54d903d1cc60",
         "type": "text/javascript",
         "exec": [
-          "const possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890\";",
+          "const possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";",
           "",
           "randomInt = (start, end) => _.random(start, end);",
           "randomString = (len) => {",
@@ -2381,23 +1891,334 @@
           "        string += possible.charAt(randomInt(0, 61));",
           "    return string;",
           "};",
+          "randomDigit = (len) => {",
+          "    let string = \"\";",
+          "    for (var i = 0; i < len; i++)",
+          "        string += possible.charAt(randomInt(52, 61));",
+          "    return string;",
+          "};",
           "",
-          "host = ()=> pm.globals.get(\"host\");",
-          "port = ()=> pm.globals.get(\"port\");",
-          "requestBuilder = (api, payload) => {",
+          "dynamicSort = (property) => {",
+          "    let sortOrder = 1;",
+          "    if(property[0] === \"-\") {",
+          "        sortOrder = -1;",
+          "        property = property.substr(1);",
+          "    }",
+          "    return (a,b) =>{",
+          "        return ((a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0) * sortOrder;",
+          "    }",
+          "};",
+          "",
+          "",
+          "host = ()=> pm.variables.get(\"host\");",
+          "port = ()=> pm.variables.get(\"port\");",
+          "requestBuilder = (api, method, transactionId, email, sessionId, payload) => {",
           "return {",
           "           url:  \"http://\"+host()+\":\"+port() + api, ",
-          "           method: 'POST',",
-          "           header: {",
-          "               'Accept': 'application/json',",
-          "               'Content-Type': 'application/json',",
-          "           },",
+          "           method,",
+          "            header :{",
+          "            'Accept': 'application/json',",
+          "            'Content-Type': 'application/json',",
+          "            'transactionID': transactionId,",
+          "            'email':email,",
+          "            'sessionID':sessionId",
+          "            },",
           "           body: {",
           "               mode :\"raw\",",
           "               raw: JSON.stringify(payload)",
-          "           }",
+          "           },",
+          "           timeout: 500",
           "       };",
-          "};"
+          "};",
+          "",
+          "",
+          "standardReturnSchema = {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        }",
+          "    }",
+          "};",
+          "",
+          "loginReturnSchema = {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"sessionID\": {",
+          "            \"type\": \"string\"",
+          "        }",
+          "    }",
+          "};",
+          "",
+          "movieReturnSchema = {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"movie\": {",
+          "            \"type\": \"object\",",
+          "            \"properties\": {",
+          "                \"movieId\" : {",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"title\" : {",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"director\" : {",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"year\" : {",
+          "                    \"type\" : \"number\"",
+          "                },",
+          "                \"backdrop_path\" : {",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"overview\" : {",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"poster_path\" : {",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"budget\": {",
+          "                    \"type\" : \"number\"",
+          "                },",
+          "                \"revenue\" : {",
+          "                    \"type\" : \"number\"",
+          "                },",
+          "                \"rating\" : {",
+          "                    \"type\" : \"number\"",
+          "                },",
+          "                \"numVotes\" : {",
+          "                    \"type\" : \"number\"",
+          "                },",
+          "                \"genres\" : {",
+          "                    \"type\" : \"array\",",
+          "                    \"items\": {",
+          "                        \"type\": \"object\",",
+          "                        \"properties\": {",
+          "                            \"id\": {",
+          "                                \"type\": \"string\"",
+          "                            },",
+          "                            \"name\": {",
+          "                                \"type\": \"string\"",
+          "                            }",
+          "                        }",
+          "                    }",
+          "                },",
+          "                \"stars\": {",
+          "                    \"type\" : \"array\",",
+          "                    \"items\": {",
+          "                        \"type\": \"object\",",
+          "                        \"properties\": {",
+          "                            \"id\": {",
+          "                                \"type\": \"string\"",
+          "                            },",
+          "                            \"name\": {",
+          "                                \"type\": \"string\"",
+          "                            },",
+          "                            \"birthYear\": {",
+          "                                \"type\": \"number\"",
+          "                            }",
+          "                        }",
+          "                    }",
+          "                }",
+          "            }",
+          "        }",
+          "    }",
+          "};",
+          "",
+          "moviesReturnSchema = {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"movies\": {",
+          "            \"type\": \"array\",",
+          "            \"items\": {",
+          "                \"type\": \"object\",",
+          "                \"properties\": {",
+          "                    \"movieId\": {",
+          "                        \"type\": \"string\"",
+          "                    },",
+          "                    \"title\": {",
+          "                        \"type\": \"string\"",
+          "                    },",
+          "                    \"year\": {",
+          "                        \"type\": \"number\"",
+          "                    },",
+          "                    \"director\": {",
+          "                        \"type\": \"string\"",
+          "                    },",
+          "                    \"rating\": {",
+          "                        \"type\": \"number\"",
+          "                    },",
+          "                    \"numVotes\": {",
+          "                        \"type\": \"number\"",
+          "                    }",
+          "                }",
+          "            }",
+          "        }",
+          "    }",
+          "};",
+          "movieAddReturnSchema = {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"movieid\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"genreid\" : {",
+          "            \"type\" : \"array\",",
+          "            \"items\": {",
+          "                \"type\": \"number\"",
+          "            }",
+          "            ",
+          "        },",
+          "    }",
+          "};",
+          "",
+          "cartReturnSchema =  {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"items\" : {",
+          "            \"type\": \"array\",",
+          "            \"items\": {",
+          "                \"type\" : \"object\",",
+          "                \"properties\" : {",
+          "                    \"email\" : {",
+          "                        \"type\" :\"string\"",
+          "                    },",
+          "                    \"movieId\":{",
+          "                        \"type\" : \"string\"",
+          "                    },",
+          "                    \"quantity\" : {",
+          "                        \"type\" : \"number\"",
+          "                    }",
+          "                    ",
+          "                }",
+          "                ",
+          "            }",
+          "        }",
+          "    }",
+          "};",
+          "",
+          "creditcardReturnSchema =  {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"creditcard\" : {",
+          "            \"type\" : \"object\",",
+          "            \"properties\" : {",
+          "                \"id\" : {",
+          "                    \"type\" :\"string\"",
+          "                },",
+          "                \"firstName\":{",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"lastName\":{",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"expiration\" : {",
+          "                    \"type\" : \"string\"",
+          "                }",
+          "            }",
+          "        }",
+          "    }",
+          "};",
+          "customerReturnSchema = {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"customer\" : {",
+          "            \"type\" : \"object\",",
+          "            \"properties\" : {",
+          "                \"email\" : {",
+          "                    \"type\" :\"string\"",
+          "                },",
+          "                \"firstName\":{",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"lastName\":{",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"ccId\" : {",
+          "                    \"type\" : \"string\"",
+          "                },",
+          "                \"address\" : {",
+          "                    \"type\" : \"string\"",
+          "                }",
+          "            }",
+          "        }",
+          "    }",
+          "};",
+          "",
+          "orderReturnSchema = {",
+          "    \"type\" : \"object\",",
+          "    \"properties\" : {",
+          "        \"resultCode\" : {",
+          "            \"type\" : \"number\"",
+          "        },",
+          "        \"message\" : {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "        \"redirectURL\": {",
+          "            \"type\" : \"string\"",
+          "        },",
+          "",
+          "        \"token\":{",
+          "            \"type\" : \"string\"",
+          "        }",
+          "    }",
+          "};",
+          "numOfPulls = 6"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "813436d4-51c1-4db6-855a-b92ef20dafdb",
+        "type": "text/javascript",
+        "exec": [
+          ""
         ]
       }
     }
