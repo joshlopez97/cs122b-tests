@@ -608,8 +608,8 @@
 											"pm.variables.set(\"addMovieTitle\", JSON.stringify(randomString(10)));",
 											"pm.variables.set(\"addMovieDirector\", JSON.stringify(randomString(10)));",
 											"pm.variables.set(\"addMovieYear\", randomInt(2020, 2024));",
-											"pm.variables.set(\"addMovieBudget\", JSON.stringify(randomDigit(8)));",
-											"pm.variables.set(\"addMovieRevenue\", JSON.stringify(randomDigit(8)));",
+											"pm.variables.set(\"addMovieBudget\", randomDigit(8));",
+											"pm.variables.set(\"addMovieRevenue\", randomDigit(8));",
 											""
 										],
 										"type": "text/javascript"
@@ -801,9 +801,9 @@
 										"exec": [
 											"pm.variables.set(\"addMovieTitle\", JSON.stringify(randomString(10)));",
 											"pm.variables.set(\"addMovieDirector\", JSON.stringify(randomString(10)));",
-											"pm.variables.set(\"addMovieYear\", JSON.stringify(randomInt(2020, 2024).toString()));",
-											"pm.variables.set(\"addMovieBudget\", JSON.stringify(randomDigit(8)));",
-											"pm.variables.set(\"addMovieRevenue\", JSON.stringify(randomDigit(8)));",
+											"pm.variables.set(\"addMovieYear\", randomInt(2020, 2024));",
+											"pm.variables.set(\"addMovieBudget\", randomDigit(8));",
+											"pm.variables.set(\"addMovieRevenue\", randomDigit(8));",
 											"pm.variables.set(\"addMovieGenres2\", JSON.stringify( [{\"name\": \"newGenre\"}, {'id': 1, \"name\": \"action\"}, {'id':19,\"name\": \"Sci-Fi\"}]));"
 										],
 										"type": "text/javascript"
